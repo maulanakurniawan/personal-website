@@ -3,7 +3,6 @@
     $googleAnalyticsHost = request()->getHost();
     $googleAnalyticsLocalHosts = ['localhost', '127.0.0.1', '::1'];
     $googleAnalyticsIsLocalhost = in_array($googleAnalyticsHost, $googleAnalyticsLocalHosts, true);
-    $googleAnalyticsIsAdminUser = (bool) auth()->user()?->is_admin;
     $googleAnalyticsEnabled = $googleAnalyticsMeasurementId !== ''
         && ! $googleAnalyticsIsLocalhost
         && ! $googleAnalyticsIsAdminUser;

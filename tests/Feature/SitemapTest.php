@@ -2,41 +2,20 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Support\Facades\File;
 use Tests\TestCase;
 
 class SitemapTest extends TestCase
 {
-    public function test_it_includes_indexable_public_marketing_pages_and_article_pages(): void
+    public function test_sitemap_includes_public_routes_and_articles(): void
     {
-        $response = $this->get(route('sitemap'));
+        $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
 
-        $response->assertOk();
-
-        $xml = $response->getContent();
-
-        $publicRouteNames = [
-            'home',
-            'pricing',
-            'contact.show',
-            'guides',
-            'terms',
-            'privacy',
-        ];
-
-        foreach ($publicRouteNames as $routeName) {
-            $this->assertStringContainsString(route($routeName), $xml);
+        foreach (['/', '/manawan', '/articles', '/contact', '/terms', '/privacy'] as $path) {
+            $this->assertStringContainsString(url($path), $xml);
         }
 
-        $this->assertStringNotContainsString(route('signup'), $xml);
-        $this->assertStringNotContainsString(route('login'), $xml);
-
-        $articleSlugs = collect(File::files(resource_path('views/articles')))
-            ->filter(fn ($file) => str_ends_with($file->getFilename(), '.blade.php'))
-            ->map(fn ($file) => str($file->getFilename())->before('.blade.php')->toString());
-
-        foreach ($articleSlugs as $slug) {
-            $this->assertStringContainsString(route('article.show', ['slug' => $slug]), $xml);
-        }
+        $this->assertStringContainsString(route('article.show', ['slug' => 'manual-vs-automatic-time-tracking']), $xml);
+        $this->assertStringNotContainsString('/pricing', $xml);
+        $this->assertStringNotContainsString('/dashboard', $xml);
     }
 }

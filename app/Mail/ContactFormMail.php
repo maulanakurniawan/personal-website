@@ -21,7 +21,7 @@ class ContactFormMail extends Mailable
 
     public function build(): self
     {
-        return $this->subject('[SoloHours] Contact form: ' . $this->subjectLine)
+        return $this->subject('[Maulana Kurniawan] Contact form: ' . $this->subjectLine)
             ->replyTo($this->email, $this->name)
             ->view('emails.contact_form');
     }

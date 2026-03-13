@@ -20,17 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ]);
-
-        $middleware->validateCsrfTokens(except: [
-            'webhooks/paddle',
-        ]);
-
-        $middleware->alias([
-            'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
-            'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-            'admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
-            'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

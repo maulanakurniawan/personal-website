@@ -46,13 +46,13 @@ class ContactController extends Controller
                 ->withInput();
         }
 
-        Mail::to(config('mail.support.address', 'support@solohours.com'))->send(new ContactFormMail(
+        Mail::to(config('mail.support.address', 'hello@maulanakurniawan.com'))->send(new ContactFormMail(
             $validated['name'],
             $validated['email'],
             $validated['subject'],
             $validated['message'],
         ));
 
-        return back()->with('success', 'Thanks! Your message has been sent.');
+        return back()->with('success', 'Thanks, your message has been sent.');
     }
 }

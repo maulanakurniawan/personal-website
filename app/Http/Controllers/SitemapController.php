@@ -9,20 +9,11 @@ class SitemapController extends Controller
 {
     public function __invoke(): Response
     {
-        $publicRouteNames = [
-            'home',
-            'pricing',
-            'contact.show',
-            'guides',
-            'terms',
-            'privacy',
-        ];
+        $publicRouteNames = ['home', 'about', 'manawan', 'articles.index', 'contact.show', 'terms', 'privacy'];
 
         $urls = collect($publicRouteNames)->map(function (string $routeName) {
-            $loc = route($routeName);
-
             return [
-                'loc' => $loc,
+                'loc' => route($routeName),
                 'lastmod' => now()->toDateString(),
                 'changefreq' => 'weekly',
                 'priority' => $routeName === 'home' ? '1.0' : '0.8',
@@ -37,17 +28,15 @@ class SitemapController extends Controller
                 return [
                     'loc' => route('article.show', ['slug' => $slug]),
                     'lastmod' => date('Y-m-d', $file->getMTime()),
-                    'changefreq' => 'weekly',
+                    'changefreq' => 'monthly',
                     'priority' => '0.7',
                 ];
             })
             ->sortBy('loc')
             ->values();
 
-        $allUrls = $urls->concat($articleUrls)->values();
-
-        $xml = view('sitemap', ['urls' => $allUrls])->render();
-
-        return response($xml, 200, ['Content-Type' => 'application/xml']);
+        return response(view('sitemap', ['urls' => $urls->concat($articleUrls)->values()])->render(), 200, [
+            'Content-Type' => 'application/xml',
+        ]);
     }
 }
