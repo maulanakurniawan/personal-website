@@ -1,7 +1,7 @@
 import './bootstrap';
 
-const lightTheme = 'solohours';
-const darkTheme = 'solohours-dark';
+const lightTheme = 'light';
+const darkTheme = 'dark';
 const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
 
 const applyTheme = (prefersDark) => {

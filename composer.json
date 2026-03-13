@@ -1,21 +1,17 @@
 {
-    "name": "solohours/solohours",
+    "name": "maulanakurniawan/personal-website",
     "type": "project",
-    "description": "SoloHours Laravel application.",
-    "keywords": ["laravel", "webhook", "monitoring"],
+    "description": "Personal website for Maulana Kurniawan built with Laravel.",
+    "keywords": ["laravel", "personal-website", "articles"],
     "license": "MIT",
     "require": {
         "php": "^8.2",
         "guzzlehttp/guzzle": "^7.8",
         "laravel/framework": "^11.0",
-        "laravel/tinker": "^2.9",
-        "paddlehq/paddle-php-sdk": "^1.16",
-        "php-http/guzzle7-adapter": "^1.1",
-        "zohomail/laravel-zeptomail": "^1.0"
+        "laravel/tinker": "^2.9"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
-        "laravel/breeze": "^2.0",
         "laravel/pint": "^1.15",
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.1",
@@ -55,10 +51,5 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "config": {
-        "allow-plugins": {
-            "php-http/discovery": true
-        }
-    }
+    "prefer-stable": true
 }

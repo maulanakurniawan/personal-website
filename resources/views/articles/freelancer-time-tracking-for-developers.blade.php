@@ -1,4 +1,4 @@
-<x-layouts.public meta-title="Time Tracking for Freelance Developers: A Practical Guide · SoloHours">
+<x-layouts.public meta-title="Time Tracking for Freelance Developers: A Practical Guide · Maulana Kurniawan">
     <section class="mx-auto max-w-5xl space-y-10">
         <div class="max-w-3xl space-y-4">
             <p class="text-sm font-medium uppercase tracking-wide text-primary">Guides</p>
@@ -53,9 +53,7 @@
                 project structure are usually more effective than complex productivity dashboards.
             </p>
             <p>
-                SoloHours was designed as a lightweight tracker for freelancers who want to record work sessions and
-                export timesheets for invoicing. You can
-                <a href="{{ route('signup') }}" class="text-primary hover:underline">create an account here</a>.
+                If you are building delivery workflows around freelance or product work, track what is measurable, review it weekly, and use the data to improve your decisions.
             </p>
         </section>
     </section>

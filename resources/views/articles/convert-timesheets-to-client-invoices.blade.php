@@ -1,4 +1,4 @@
-<x-layouts.public meta-title="How Freelance Developers Turn Timesheets into Client Invoices · SoloHours">
+<x-layouts.public meta-title="How Freelance Developers Turn Timesheets into Client Invoices · Maulana Kurniawan">
     <section class="mx-auto max-w-5xl space-y-10">
         <div class="max-w-3xl space-y-4">
             <p class="text-sm font-medium uppercase tracking-wide text-primary">Guides</p>
@@ -50,8 +50,8 @@
                 can help improve pricing strategies and project estimation in the future.
             </p>
             <p>
-                SoloHours allows you to export clean timesheets for invoicing whenever needed. You can
-                <a href="{{ route('signup') }}" class="text-primary hover:underline">start using SoloHours</a>
+                this site allows you to export clean timesheets for invoicing whenever needed. You can
+                <a href="{{ route('contact.show') }}" class="text-primary hover:underline">reach out</a>
                 to track your billable hours.
             </p>
         </section>

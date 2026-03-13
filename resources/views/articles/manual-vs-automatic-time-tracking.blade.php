@@ -1,4 +1,4 @@
-<x-layouts.public meta-title="Manual vs Automatic Time Tracking for Developers · SoloHours">
+<x-layouts.public meta-title="Manual vs Automatic Time Tracking for Developers · Maulana Kurniawan">
     <section class="mx-auto max-w-5xl space-y-10">
         <div class="max-w-3xl space-y-4">
             <p class="text-sm font-medium uppercase tracking-wide text-primary">Guides</p>
@@ -51,9 +51,9 @@
                 time requires too many steps, the habit quickly disappears.
             </p>
             <p>
-                SoloHours focuses on simple manual timers and clean timesheets designed for freelancers and
+                this site focuses on simple manual timers and clean timesheets designed for freelancers and
                 developers. You can
-                <a href="{{ route('signup') }}" class="text-primary hover:underline">try SoloHours here</a>.
+                <a href="{{ route('contact.show') }}" class="text-primary hover:underline">get in touch</a>.
             </p>
         </section>
     </section>
