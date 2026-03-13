@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+
+@layer components {
+    @keyframes sh-timer-slide-down {
+        from {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes sh-timer-slide-up {
+        from {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        to {
+            opacity: 0;
+            transform: translateY(-12px);
+        }
+    }
+
+    .sh-timer-indicator-enter {
+        animation: sh-timer-slide-down 250ms ease-out;
+    }
+
+    .sh-timer-indicator-exit {
+        animation: sh-timer-slide-up 220ms ease-in;
+    }
+
+    @media (max-width: 639px) {
+        .table thead {
+            @apply hidden;
+        }
+
+        .table tbody,
+        .table tbody tr,
+        .table tbody td {
+            @apply block;
+        }
+
+        .table tbody tr {
+            @apply mb-4 rounded-lg border border-base-200 bg-base-100 p-4 shadow-sm;
+        }
+
+        .table tbody tr:last-child {
+            @apply mb-0;
+        }
+
+        .table tbody td {
+            @apply flex items-center justify-between gap-4 py-1 text-sm;
+        }
+
+        .table tbody td::before {
+            content: attr(data-label);
+            @apply text-xs font-semibold uppercase tracking-wide text-base-content/70;
+        }
+
+        .table tbody tr.table-empty {
+            @apply p-4;
+        }
+
+        .table tbody tr.table-empty td {
+            @apply block text-center;
+        }
+
+        .table tbody tr.table-empty td::before {
+            content: none;
+        }
+    }
+
+    .sh-pill {
+        @apply badge badge-sm border text-white;
+    }
+
+    .sh-pill-billable {
+        @apply border-emerald-700 bg-emerald-700 text-white;
+    }
+
+    .sh-pill-invoiced {
+        @apply border-sky-700 bg-sky-700 text-white;
+    }
+
+    .sh-pill-uninvoiced {
+        @apply border-amber-700 bg-amber-700 text-white;
+    }
+
+    .sh-pill-muted {
+        @apply border-slate-700 bg-slate-700 text-white;
+    }
+
+    .sh-pill-positive {
+        @apply border-green-700 bg-green-700 text-white;
+    }
+
+    .sh-pill-warning {
+        @apply border-orange-700 bg-orange-700 text-white;
+    }
+
+    .sh-toast {
+        @apply flex h-[50px] w-auto min-w-[20rem] max-w-[32rem] items-center justify-between gap-3 rounded-full border border-base-300 px-4 py-0 text-sm leading-5 text-white shadow-lg transition-all duration-200;
+    }
+
+    .sh-toast > span {
+        @apply leading-none;
+    }
+
+    .sh-toast-success {
+        @apply bg-emerald-700 text-white;
+    }
+
+    .sh-toast-error {
+        @apply bg-rose-700 text-white;
+    }
+
+    .sh-toast-close {
+        @apply inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-0 bg-transparent p-0 text-base leading-none text-white/90 shadow-none outline-none ring-0 transition-colors;
+    }
+
+    .sh-toast-close:hover,
+    .sh-toast-close:focus,
+    .sh-toast-close:focus-visible,
+    .sh-toast-close:active {
+        @apply border-0 bg-transparent text-white shadow-none outline-none ring-0;
+    }
+
+}
