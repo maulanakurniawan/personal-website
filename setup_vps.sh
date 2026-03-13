@@ -52,7 +52,7 @@ PHP_PACKAGES=(
 
 apt-get update
 apt-get install -y --no-install-recommends \
-  ca-certificates curl git openssl sudo unzip supervisor nginx mariadb-server certbot python3-certbot-nginx \
+  ca-certificates curl git openssl sudo unzip supervisor nginx mariadb-server certbot python3-certbot-nginx ufw \
   "${PHP_PACKAGES[@]}" \
   redis-server
 
@@ -97,7 +97,7 @@ chown -R "${DEPLOY_USER}:${DEPLOY_USER}" "/home/${DEPLOY_USER}/.ssh"
 chmod 600 "/home/${DEPLOY_USER}/.ssh/authorized_keys"
 
 install -d -m 755 "${APP_DIR}"
-chown -R "${DEPLOY_USER}:${DEPLOY_USER}" "${APP_DIR}"
+chown -R "${DEPLOY_USER}:www-data" "${APP_DIR}"
 
 cat > "/etc/nginx/sites-available/${APP_NAME}" <<NGINX
 server {
@@ -138,6 +138,14 @@ autorestart=true
 stderr_logfile=/var/log/${APP_NAME}-schedule.err.log
 stdout_logfile=/var/log/${APP_NAME}-schedule.out.log
 SUP
+
+ufw --force reset
+ufw default deny incoming
+ufw default allow outgoing
+ufw limit OpenSSH
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw --force enable
 
 systemctl enable --now "${PHP_FPM_SERVICE}" nginx supervisor redis-server mariadb
 nginx -t
