@@ -16,7 +16,6 @@
             </p>
             <div class="flex flex-wrap gap-2.5">
                 <a href="{{ route('manawan') }}" class="btn btn-primary btn-sm md:btn-md">View Manawan</a>
-                <a href="{{ route('articles.index') }}" class="btn btn-outline btn-sm md:btn-md">Read Articles</a>
                 <a href="{{ route('contact.show') }}" class="btn btn-ghost btn-sm md:btn-md">Contact Me</a>
             </div>
         </section>
@@ -62,14 +61,6 @@
                 The approach is straightforward: solve practical problems, execute carefully, and keep products lean.
             </p>
             <a href="{{ route('manawan') }}" class="btn btn-outline btn-sm">Learn more about Manawan</a>
-        </section>
-
-        <section class="rounded-2xl border border-base-200 p-6 space-y-3">
-            <h2 class="text-2xl font-semibold">Articles</h2>
-            <p class="text-sm text-base-content/75 md:text-base">
-                I publish technical articles on Laravel work, software delivery, and practical product execution.
-            </p>
-            <a href="{{ route('articles.index') }}" class="btn btn-ghost btn-sm">Browse articles</a>
         </section>
 
         <section class="rounded-2xl border border-base-200 p-6 space-y-3">
