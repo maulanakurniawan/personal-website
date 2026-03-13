@@ -1,9 +1,14 @@
-<x-layouts.public meta-title="Articles · Maulana Kurniawan" meta-description="Articles and practical guides on software delivery, Laravel development, and product execution.">
+<x-layouts.public
+    meta-title="Articles · Maulana Kurniawan"
+    meta-description="Technical articles by Maulana Kurniawan on Laravel development, web applications, internal tools, and practical software execution."
+>
     <section class="mx-auto max-w-4xl space-y-8">
-        <div class="space-y-3">
-            <h1 class="text-4xl font-bold">Articles</h1>
-            <p class="text-base text-base-content/75">Practical notes on shipping software, Laravel implementation, and focused product work.</p>
-        </div>
+        <header class="space-y-3">
+            <h1 class="text-3xl font-bold md:text-4xl">Articles</h1>
+            <p class="text-sm text-base-content/75 md:text-base">
+                Practical technical writing on PHP/Laravel delivery, web application execution, and building useful software products.
+            </p>
+        </header>
 
         <div class="space-y-3">
             @forelse($articles as $article)
@@ -11,7 +16,7 @@
                     <h2 class="text-xl font-semibold">
                         <a href="{{ route('article.show', ['slug' => $article['slug']]) }}" class="hover:text-primary">{{ $article['title'] }}</a>
                     </h2>
-                    <p class="mt-2 text-sm text-base-content/70">Read the full article.</p>
+                    <p class="mt-2 text-sm text-base-content/70">Read the article.</p>
                 </article>
             @empty
                 <p class="text-sm text-base-content/70">No articles published yet.</p>
