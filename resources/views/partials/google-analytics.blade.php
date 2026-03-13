@@ -1,4 +1,5 @@
 @php
+    $googleAnalyticsIsAdminUser = (bool) ($googleAnalyticsIsAdminUser ?? false);
     $googleAnalyticsMeasurementId = trim((string) config('services.google_analytics.measurement_id', ''));
     $googleAnalyticsHost = request()->getHost();
     $googleAnalyticsLocalHosts = ['localhost', '127.0.0.1', '::1'];
