@@ -3,22 +3,42 @@
     meta-description="Maulana Kurniawan is a senior PHP/Laravel developer building practical web applications, internal tools, and small software products under Manawan."
 >
     <section class="mx-auto max-w-5xl space-y-12">
-        <section class="space-y-5">
-            <p class="text-sm font-medium uppercase tracking-wide text-primary">Maulana Kurniawan</p>
-            <h1 class="text-3xl font-bold leading-tight md:text-5xl">Senior PHP / Laravel developer building practical web applications and useful software.</h1>
-            <p class="max-w-3xl text-sm text-base-content/75 md:text-base">
-                I build and ship web products with clear operational value. My work spans product development,
-                backend systems, frontend implementation, and deployment workflows.
-            </p>
-            <p class="max-w-3xl text-sm text-base-content/75 md:text-base">
-                I also run <a href="{{ route('manawan') }}" class="text-primary hover:underline">Manawan</a>,
-                a personal initiative for focused software products and technical experiments.
-            </p>
-            <div class="flex flex-wrap gap-2.5">
-                <a href="{{ route('manawan') }}" class="btn btn-primary btn-sm md:btn-md">View Manawan</a>
-                <a href="{{ route('contact.show') }}" class="btn btn-ghost btn-sm md:btn-md">Contact Me</a>
+
+        <section class="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
+            <div class="space-y-5">
+                <p class="text-sm font-medium uppercase tracking-wide text-primary">Maulana Kurniawan</p>
+
+                <h1 class="text-3xl font-bold leading-tight md:text-5xl">
+                    Senior PHP / Laravel developer building practical web applications and useful software.
+                </h1>
+
+                <p class="max-w-3xl text-sm text-base-content/75 md:text-base">
+                    I build and ship web products with clear operational value. My work spans product development,
+                    backend systems, frontend implementation, and deployment workflows.
+                </p>
+
+                <p class="max-w-3xl text-sm text-base-content/75 md:text-base">
+                    I also run
+                    <a href="{{ route('manawan') }}" class="text-primary hover:underline">Manawan</a>,
+                    a personal initiative for focused software products and technical experiments.
+                </p>
+
+                <div class="flex flex-wrap gap-2.5">
+                    <a href="{{ route('manawan') }}" class="btn btn-primary btn-sm md:btn-md">View Manawan</a>
+                    <a href="{{ route('contact.show') }}" class="btn btn-ghost btn-sm md:btn-md">Contact Me</a>
+                </div>
+            </div>
+
+            <!-- Avatar -->
+            <div class="flex justify-center md:justify-end">
+                <img
+                    src="/assets/avatar.png"
+                    alt="Avatar of Maulana Kurniawan"
+                    class="h-36 w-36 rounded-full border border-base-200 md:h-44 md:w-44 lg:h-48 lg:w-48"
+                >
             </div>
         </section>
+
 
         <section class="space-y-4 rounded-2xl border border-base-200 bg-base-100 p-6">
             <h2 class="text-2xl font-semibold">What I work on</h2>
@@ -71,5 +91,6 @@
             </p>
             <a href="{{ route('contact.show') }}" class="btn btn-primary btn-sm">Go to contact page</a>
         </section>
+
     </section>
 </x-layouts.public>
