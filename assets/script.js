@@ -44,3 +44,12 @@ images.forEach((img) => {
 
 const year = document.getElementById('year');
 if (year) year.textContent = String(new Date().getFullYear());
+
+const experienceYears = document.querySelectorAll('[data-exp-years]');
+experienceYears.forEach((node) => {
+  const startYear = Number(node.getAttribute('data-start-year'));
+  const currentYear = new Date().getFullYear();
+  if (!Number.isNaN(startYear) && startYear > 1900 && currentYear >= startYear) {
+    node.textContent = String(currentYear - startYear);
+  }
+});
