@@ -1,4 +1,40 @@
-#!/usr/bin/env bash
+name: Deploy to Server
+
+on:
+  push:
+    branches: [ main ]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---------- Backend build on runner ----------
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.2"
+          tools: composer:v2
+          extensions: mbstring, intl, pdo_mysql, bcmath, gd, curl, zip
+          coverage: none
+
+      - name: Composer install (no-dev)
+        run: |
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction --no-progress
+
+      # ---------- Frontend build on runner ----------
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"#!/usr/bin/env bash
 set -euo pipefail
 
 if [[ ${EUID:-$(id -u)} -ne 0 ]]; then
@@ -254,3 +290,81 @@ Next steps:
 - Run: composer install && php artisan key:generate && php artisan migrate
 - Run: npm install && npm run build
 CREDS
+
+
+      - name: NPM ci + build
+        run: |
+          npm ci
+          npm run build
+
+      # ---------- SSH setup ----------
+      - name: Prepare SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_KEY }}" | tr -d '\r' > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keygen -p -m PEM -f ~/.ssh/deploy_key -N "" -P "" || true
+
+      - name: Add server to known_hosts
+        run: |
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
+      # ---------- Rsync ----------
+      - name: Sync files to server via rsync
+        env:
+          SSH_CMD: "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes"
+        run: |
+          rsync -az --delete \
+            -e "$SSH_CMD" \
+            --exclude ".git" \
+            --exclude ".github" \
+            --exclude ".env" \
+            --exclude "node_modules" \
+            --exclude "storage" \
+            --exclude "bootstrap/cache" \
+            --exclude "setup_vps.sh" \
+            ./ \
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/maulana
+
+      # ---------- Remote artisan commands ----------
+      - name: Run remote deploy commands
+        env:
+          SSH_CMD: "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes"
+        run: |
+          $SSH_CMD ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
+          set -euo pipefail
+
+          APP_DIR="/var/www/maulana"
+          cd "$APP_DIR"
+
+          # Ensure required dirs exist (sometimes excluded/missing)
+          mkdir -p storage/framework/cache/data \
+                   storage/framework/sessions \
+                   storage/framework/views \
+                   storage/logs \
+                   bootstrap/cache
+
+          # Ensure writable dirs (adjust to your nginx user/group)
+          chown -R deploy:www-data storage bootstrap/cache || true
+          find storage bootstrap/cache -type d -exec chmod 775 {} \;
+          find storage bootstrap/cache -type f -exec chmod 664 {} \;
+
+          # Optional: prevent users hitting half-updated state during migrate/cache
+          php artisan down --refresh=15 || true
+
+          php artisan migrate --force
+          php artisan optimize:clear
+          php artisan config:cache
+
+          # Optional but usually good in prod
+          php artisan route:cache || true
+          php artisan view:cache || true
+
+          # Gracefully restart queue workers (no sudo needed)
+          php artisan queue:restart
+
+          # Optional: keep this if you rely on it
+          php artisan paddle:sync-plans || true
+
+          php artisan up || true
+          EOF
