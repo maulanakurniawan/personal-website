@@ -1,5 +1,5 @@
 <x-layouts.public
-    meta-title="About · Maulana Kurniawan"
+    meta-title="About - Maulana Kurniawan"
     meta-description="About Maulana Kurniawan, a senior PHP/Laravel developer focused on practical web applications, internal tools, and software products."
 >
     <section class="mx-auto max-w-4xl space-y-6">

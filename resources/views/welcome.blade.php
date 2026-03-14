@@ -1,5 +1,5 @@
 <x-layouts.public
-    meta-title="Maulana Kurniawan · Senior PHP/Laravel Web Developer"
+    meta-title="Maulana Kurniawan - Senior PHP/Laravel Web Developer"
     meta-description="Maulana Kurniawan is a senior PHP/Laravel developer building practical web applications, internal tools, and small software products under Menawan."
 >
     <section class="mx-auto max-w-5xl space-y-12">
@@ -29,7 +29,6 @@
                 </div>
             </div>
 
-            <!-- Avatar -->
             <div class="flex justify-center md:justify-end">
                 <img
                     src="/assets/avatar.png"
@@ -38,7 +37,6 @@
                 >
             </div>
         </section>
-
 
         <section class="space-y-4 rounded-2xl border border-base-200 bg-base-100 p-6">
             <h2 class="text-2xl font-semibold">What I work on</h2>
@@ -74,13 +72,81 @@
             </div>
         </section>
 
-        <section class="rounded-2xl border border-base-200 p-6 space-y-3">
-            <h2 class="text-2xl font-semibold">Menawan</h2>
-            <p class="text-sm text-base-content/75 md:text-base">
-                Menawan is where I build small useful software, utility web tools, and focused product ideas.
-                The approach is straightforward: solve practical problems, execute carefully, and keep products lean.
-            </p>
-            <a href="{{ route('menawan') }}" class="btn btn-outline btn-sm">Learn more about Menawan</a>
+        <section class="rounded-2xl border border-base-200 p-6 space-y-4">
+            <div class="flex items-start gap-3">
+                <img
+                    src="/assets/menawan-logo.png"
+                    alt="Menawan logo"
+                    class="h-10 w-10 shrink-0 object-contain"
+                >
+                <div class="space-y-3">
+                    <h2 class="text-2xl font-semibold">Menawan</h2>
+                    <p class="text-sm text-base-content/75 md:text-base">
+                        Menawan is where I build small useful software, utility web tools, and focused product ideas.
+                        The approach is straightforward: solve practical problems, execute carefully, and keep products lean.
+                    </p>
+                    <a href="{{ route('menawan') }}" class="btn btn-outline btn-sm">Learn more about Menawan</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="space-y-5 rounded-2xl border border-base-200 p-6">
+            <div class="space-y-2">
+                <h2 class="text-2xl font-semibold">Products</h2>
+                <p class="text-sm text-base-content/75 md:text-base">
+                    Current software products built under Menawan.
+                </p>
+            </div>
+
+            <div class="grid gap-4 md:grid-cols-2">
+                <article class="rounded-2xl border border-base-200 bg-base-100 p-5">
+                    <div class="flex items-start gap-4">
+                        <img
+                            src="/assets/webhookwatch-logo.png"
+                            alt="WebhookWatch logo"
+                            class="h-12 w-12 rounded-xl border border-base-200 object-contain"
+                        >
+                        <div class="space-y-2">
+                            <h3 class="text-lg font-semibold">WebhookWatch</h3>
+                            <p class="text-sm text-base-content/75">
+                                Webhook monitoring for detecting failures, incidents, and silent delivery issues in production.
+                            </p>
+                            <a
+                                href="https://www.webhookwatch.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-sm font-medium text-primary hover:underline"
+                            >
+                                Visit WebhookWatch →
+                            </a>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="rounded-2xl border border-base-200 bg-base-100 p-5">
+                    <div class="flex items-start gap-4">
+                        <img
+                            src="/assets/solohours-logo.png"
+                            alt="SoloHours logo"
+                            class="h-12 w-12 rounded-xl border border-base-200 object-contain"
+                        >
+                        <div class="space-y-2">
+                            <h3 class="text-lg font-semibold">SoloHours</h3>
+                            <p class="text-sm text-base-content/75">
+                                Simple time tracking for freelancers who want focused project tracking and useful exports.
+                            </p>
+                            <a
+                                href="https://www.solohours.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="text-sm font-medium text-primary hover:underline"
+                            >
+                                Visit SoloHours →
+                            </a>
+                        </div>
+                    </div>
+                </article>
+            </div>
         </section>
 
         <section class="rounded-2xl border border-base-200 p-6 space-y-3">

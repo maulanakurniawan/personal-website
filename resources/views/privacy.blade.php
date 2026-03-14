@@ -1,5 +1,5 @@
 <x-layouts.public
-    meta-title="Privacy Policy · Maulana Kurniawan"
+    meta-title="Privacy Policy - Maulana Kurniawan"
     meta-description="Privacy policy for Maulana Kurniawan personal website, including public pages, technical articles, Menawan software initiative pages, analytics, and contact form handling."
 >
     <section class="mx-auto max-w-4xl space-y-5">

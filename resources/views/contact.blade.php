@@ -1,5 +1,5 @@
 <x-layouts.public
-    meta-title="Contact · Maulana Kurniawan"
+    meta-title="Contact - Maulana Kurniawan"
     meta-description="Contact Maulana Kurniawan for project discussions, technical consulting, and collaboration on web applications and software tools."
 >
     <section class="mx-auto max-w-3xl space-y-6">

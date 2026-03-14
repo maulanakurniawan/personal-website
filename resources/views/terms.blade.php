@@ -1,5 +1,5 @@
 <x-layouts.public
-    meta-title="Terms of Use · Maulana Kurniawan"
+    meta-title="Terms of Use - Maulana Kurniawan"
     meta-description="Terms of use for Maulana Kurniawan personal website, including public pages, technical articles, Menawan software initiative pages, and contact form usage."
 >
     <section class="mx-auto max-w-4xl space-y-5">

@@ -1,5 +1,5 @@
 <x-layouts.public
-    meta-title="Articles · Maulana Kurniawan"
+    meta-title="Articles - Maulana Kurniawan"
     meta-description="Technical articles by Maulana Kurniawan on Laravel development, web applications, internal tools, and practical software execution."
 >
     <section class="mx-auto max-w-4xl space-y-8">
