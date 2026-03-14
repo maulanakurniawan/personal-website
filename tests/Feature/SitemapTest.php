@@ -10,7 +10,7 @@ class SitemapTest extends TestCase
     {
         $xml = $this->get('/sitemap.xml')->assertOk()->getContent();
 
-        foreach (['/', '/manawan', '/articles', '/contact', '/terms', '/privacy'] as $path) {
+        foreach (['/', '/menawan', '/articles', '/contact', '/terms', '/privacy'] as $path) {
             $this->assertStringContainsString(url($path), $xml);
         }
 

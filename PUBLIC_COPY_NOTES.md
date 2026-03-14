@@ -6,17 +6,17 @@
 - Added compact sections for:
   - positioning
   - focus areas
-  - Manawan intro
+  - Menawan intro
   - articles/writing
   - contact/work inquiries
 - Chose short, technical, human wording without hype claims or agency-style language.
 
-## Manawan positioning
-- Framed Manawan as a **personal initiative**, not a company or startup studio.
+## Menawan positioning
+- Framed Menawan as a **personal initiative**, not a company or startup studio.
 - Emphasized usefulness, focused scope, and execution over noise.
 - Added structure requested:
   - intro hero
-  - what Manawan is
+  - what Menawan is
   - why it exists
   - what gets built under it
   - connection to Maulana/personal website
@@ -25,7 +25,7 @@
 ## Major SEO improvements
 - Refined unique meta titles/descriptions for:
   - homepage
-  - manawan
+  - menawan
   - contact
   - articles index
   - privacy
@@ -39,7 +39,7 @@
   - internal tools
   - software products
   - technical articles
-- Improved internal linking pathways between homepage, Manawan, articles, and contact.
+- Improved internal linking pathways between homepage, Menawan, articles, and contact.
 
 ## Assumptions made
 - "Articles" remains the primary content label and route (`/articles`) for consistency.

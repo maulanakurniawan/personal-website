@@ -8,7 +8,7 @@ class PublicPagesTest extends TestCase
 {
     public function test_public_pages_render(): void
     {
-        foreach (['/', '/about', '/manawan', '/articles', '/contact', '/terms', '/privacy'] as $uri) {
+        foreach (['/', '/about', '/menawan', '/articles', '/contact', '/terms', '/privacy'] as $uri) {
             $this->get($uri)->assertOk();
         }
     }
@@ -20,6 +20,6 @@ class PublicPagesTest extends TestCase
         $response->assertDontSee('Pricing');
         $response->assertDontSee('Dashboard');
         $response->assertDontSee('Signup');
-        $response->assertSee('Manawan');
+        $response->assertSee('Menawan');
     }
 }

@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [MarketingController::class, 'home'])->name('home');
 Route::get('/about', [MarketingController::class, 'about'])->name('about');
-Route::get('/manawan', [MarketingController::class, 'manawan'])->name('manawan');
+Route::get('/menawan', [MarketingController::class, 'menawan'])->name('menawan');
 Route::get('/articles', [MarketingController::class, 'articles'])->name('articles.index');
 Route::get('/guides', fn () => redirect()->route('articles.index', status: 301))->name('guides');
 Route::get('/article/{slug}', [MarketingController::class, 'article'])->name('article.show');

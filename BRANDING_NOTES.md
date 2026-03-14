@@ -7,9 +7,9 @@
 - Contact mail subject branding changed from SoloHours to Maulana Kurniawan.
 - Web manifest app name changed from SoloHours to Maulana Kurniawan.
 
-## Manawan initiative integration
-- Added dedicated `/manawan` page explaining initiative scope, tone, and purpose.
-- Added Manawan to primary navigation and footer links.
+## Menawan initiative integration
+- Added dedicated `/menawan` page explaining initiative scope, tone, and purpose.
+- Added Menawan to primary navigation and footer links.
 
 ## Content/system consistency
 - Removed references to signup/login/dashboard/pricing/billing from public navigation/chrome.

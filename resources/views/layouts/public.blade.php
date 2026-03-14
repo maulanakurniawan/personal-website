@@ -59,7 +59,7 @@
 
             <div class="flex items-center gap-1 text-sm">
                 <a href="{{ route('home') }}" class="btn btn-ghost btn-sm">Home</a>
-                <a href="{{ route('manawan') }}" class="btn btn-ghost btn-sm">Manawan</a>
+                <a href="{{ route('menawan') }}" class="btn btn-ghost btn-sm">Menawan</a>
                 <a href="{{ route('articles.index') }}" class="btn btn-ghost btn-sm">Articles</a>
                 <a href="{{ route('contact.show') }}" class="btn btn-primary btn-sm">Contact</a>
             </div>
@@ -78,7 +78,7 @@
 
             <div class="flex flex-wrap items-center gap-4">
                 <a href="{{ route('home') }}" class="transition-opacity hover:opacity-100 opacity-80">Home</a>
-                <a href="{{ route('manawan') }}" class="transition-opacity hover:opacity-100 opacity-80">Manawan</a>
+                <a href="{{ route('menawan') }}" class="transition-opacity hover:opacity-100 opacity-80">Menawan</a>
                 <a href="{{ route('articles.index') }}" class="transition-opacity hover:opacity-100 opacity-80">Articles</a>
                 <a href="{{ route('contact.show') }}" class="transition-opacity hover:opacity-100 opacity-80">Contact</a>
                 <a href="{{ route('terms') }}" class="transition-opacity hover:opacity-100 opacity-80">Terms</a>

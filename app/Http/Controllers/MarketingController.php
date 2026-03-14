@@ -17,9 +17,9 @@ class MarketingController extends Controller
         return view('about');
     }
 
-    public function manawan(): View
+    public function menawan(): View
     {
-        return view('manawan');
+        return view('menawan');
     }
 
     public function articles(): View

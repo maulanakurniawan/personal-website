@@ -13,10 +13,10 @@
 - Existing article system (article listing + article detail routes + sitemap inclusion).
 
 ## Added
-- New public page: `/manawan` with initiative positioning and CTA to contact.
+- New public page: `/menawan` with initiative positioning and CTA to contact.
 - New `/about` page for profile content.
 - Refactored homepage content for Maulana Kurniawan personal positioning.
-- Updated navigation to only relevant public links (Home, Manawan, Articles, Contact).
+- Updated navigation to only relevant public links (Home, Menawan, Articles, Contact).
 - Cleanup summary docs: `ROUTE_AUDIT.md` and `BRANDING_NOTES.md`.
 
 ## Manual follow-up
