@@ -23,6 +23,12 @@ return [
         'array' => [
             'transport' => 'array',
         ],
+
+        'zeptomail' => [
+            'transport' => 'zeptomail',
+            'api_key' => env('ZEPTOMAIL_API_KEY'),
+            'host' => env('ZEPTOMAIL_HOST', 'zoho.com'),
+        ],
     ],
 
     'from' => [

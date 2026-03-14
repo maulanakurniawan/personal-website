@@ -8,4 +8,8 @@ return [
         'site_key' => env('TURNSTILE_SITE_KEY'),
         'secret_key' => env('TURNSTILE_SECRET_KEY'),
     ],
+    'zeptomail' => [
+        'api_key' => env('ZEPTOMAIL_API_KEY'),
+        'host' => env('ZEPTOMAIL_HOST', 'zoho.com'),
+    ],
 ];
