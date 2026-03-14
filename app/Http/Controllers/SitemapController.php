@@ -9,7 +9,7 @@ class SitemapController extends Controller
 {
     public function __invoke(): Response
     {
-        $publicRouteNames = ['home', 'about', 'manawan', 'articles.index', 'contact.show', 'terms', 'privacy'];
+        $publicRouteNames = ['home', 'about', 'menawan', 'articles.index', 'contact.show', 'terms', 'privacy'];
 
         $urls = collect($publicRouteNames)->map(function (string $routeName) {
             return [

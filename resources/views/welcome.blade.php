@@ -1,6 +1,6 @@
 <x-layouts.public
     meta-title="Maulana Kurniawan · Senior PHP/Laravel Web Developer"
-    meta-description="Maulana Kurniawan is a senior PHP/Laravel developer building practical web applications, internal tools, and small software products under Manawan."
+    meta-description="Maulana Kurniawan is a senior PHP/Laravel developer building practical web applications, internal tools, and small software products under Menawan."
 >
     <section class="mx-auto max-w-5xl space-y-12">
 
@@ -19,12 +19,12 @@
 
                 <p class="max-w-3xl text-sm text-base-content/75 md:text-base">
                     I also run
-                    <a href="{{ route('manawan') }}" class="text-primary hover:underline">Manawan</a>,
+                    <a href="{{ route('menawan') }}" class="text-primary hover:underline">Menawan</a>,
                     a personal initiative for focused software products and technical experiments.
                 </p>
 
                 <div class="flex flex-wrap gap-2.5">
-                    <a href="{{ route('manawan') }}" class="btn btn-primary btn-sm md:btn-md">View Manawan</a>
+                    <a href="{{ route('menawan') }}" class="btn btn-primary btn-sm md:btn-md">View Menawan</a>
                     <a href="{{ route('contact.show') }}" class="btn btn-ghost btn-sm md:btn-md">Contact Me</a>
                 </div>
             </div>
@@ -75,12 +75,12 @@
         </section>
 
         <section class="rounded-2xl border border-base-200 p-6 space-y-3">
-            <h2 class="text-2xl font-semibold">Manawan</h2>
+            <h2 class="text-2xl font-semibold">Menawan</h2>
             <p class="text-sm text-base-content/75 md:text-base">
-                Manawan is where I build small useful software, utility web tools, and focused product ideas.
+                Menawan is where I build small useful software, utility web tools, and focused product ideas.
                 The approach is straightforward: solve practical problems, execute carefully, and keep products lean.
             </p>
-            <a href="{{ route('manawan') }}" class="btn btn-outline btn-sm">Learn more about Manawan</a>
+            <a href="{{ route('menawan') }}" class="btn btn-outline btn-sm">Learn more about Menawan</a>
         </section>
 
         <section class="rounded-2xl border border-base-200 p-6 space-y-3">

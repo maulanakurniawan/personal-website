@@ -2,7 +2,7 @@
 
 - `GET /` → Homepage
 - `GET /about` → About/profile page
-- `GET /manawan` → Manawan initiative page
+- `GET /menawan` → Menawan initiative page
 - `GET /articles` → Article listing page
 - `GET /guides` → 301 redirect to `/articles`
 - `GET /article/{slug}` → Article detail pages
