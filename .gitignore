@@ -21,6 +21,6 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
-solo-hours.sublime-project
-solo-hours.sublime-workspace
+*.sublime-project
+*.sublime-workspace
 notes.txt
