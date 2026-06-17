@@ -1,0 +1,7 @@
+@extends('admin.layout')
+@section('content')
+<section class="rounded bg-white p-6 shadow"><div class="flex items-start justify-between gap-4"><div><h1 class="text-2xl font-bold capitalize">{{ str_replace('-', ' ', $section) }}</h1><p class="text-sm text-slate-500">{{ $product['domain'] }} · {{ $productKey }}</p></div></div>
+@if(! $response->success)<div class="mt-6 rounded border border-red-200 bg-red-50 p-4 text-red-800"><strong>API error:</strong> {{ $response->error['message'] ?? 'Unable to load data.' }}</div>@elseif(empty($data))<div class="mt-6 rounded border border-slate-200 bg-slate-50 p-4 text-slate-600">No data returned yet.</div>@else <div class="mt-6 overflow-auto rounded border border-slate-200"><pre class="whitespace-pre-wrap p-4 text-sm">{{ json_encode(['data' => $data, 'meta' => $meta], JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) }}</pre></div>@endif
+@if($section === 'settings')<form method="POST" action="{{ route('admin.product.settings.update', $productKey) }}" class="mt-6">@csrf @method('PATCH')<button class="rounded bg-blue-600 px-4 py-2 text-white" onclick="return confirm('Submit safe settings update?')">Submit settings update</button></form>@endif
+@if($section === 'user-detail')<form method="POST" action="{{ url('/admin/'.$productKey.'/users/'.request()->route('id').'/actions') }}" class="mt-6">@csrf<input type="hidden" name="action" value="noop"><button class="rounded bg-amber-600 px-4 py-2 text-white" onclick="return confirm('Submit this user action?')">Submit user action</button></form>@endif</section>
+@endsection
