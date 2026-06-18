@@ -36,23 +36,33 @@ class AdminResourceCrudTest extends TestCase
         $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users/1')->assertOk()->assertSee('maulana@example.com')->assertSee('Yes');
     }
 
-    public function test_create_and_edit_pages_are_only_available_when_operation_supported(): void
+    public function test_create_and_edit_pages_are_not_available_when_operation_unsupported(): void
     {
         $this->fakeSchemaAndItems(['operations' => ['view']]);
+
         $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users/create')->assertNotFound();
         $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users/1/edit')->assertNotFound();
+    }
 
+    public function test_create_and_edit_pages_are_available_when_operation_supported(): void
+    {
         $this->fakeSchemaAndItems(['operations' => ['view', 'create', 'update']]);
+
         $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users/create')->assertOk()->assertSee('Create Users');
         $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users/1/edit')->assertOk()->assertSee('Edit Users');
     }
 
-    public function test_delete_button_only_appears_when_supported_and_uses_form_submission(): void
+    public function test_delete_button_does_not_appear_when_unsupported(): void
     {
         $this->fakeSchemaAndItems(['operations' => ['view']]);
-        $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users')->assertOk()->assertDontSee('_method', false)->assertDontSee('Delete');
 
+        $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users')->assertOk()->assertDontSee('_method', false)->assertDontSee('Delete');
+    }
+
+    public function test_delete_button_appears_when_supported_and_uses_form_submission(): void
+    {
         $this->fakeSchemaAndItems(['operations' => ['view', 'delete']]);
+
         $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users')->assertOk()->assertSee('method="POST"', false)->assertSee('Delete')->assertSee('confirm(', false);
     }
 

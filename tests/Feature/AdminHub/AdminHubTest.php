@@ -75,11 +75,15 @@ class AdminHubTest extends TestCase
     public function test_client_sends_headers_and_handles_responses_safely(): void
     {
         config(['admin-hub.products.webhookwatch.base_url' => 'https://example.test', 'admin-hub.products.webhookwatch.client_id' => 'id', 'admin-hub.products.webhookwatch.client_secret' => 'secret']);
-        Http::fake(['example.test/overview' => Http::response(['success' => true, 'data' => ['ok' => true], 'meta' => []])]);
+        Http::fake([
+            'example.test/overview' => Http::sequence()
+                ->push(['success' => true, 'data' => ['ok' => true], 'meta' => []])
+                ->push([], 500),
+        ]);
+
         app(\App\AdminHub\Clients\SaasAdminClient::class)->get('webhookwatch', 'overview');
         Http::assertSent(fn ($request) => $request->hasHeader('X-Admin-Client-Id', 'id') && $request->hasHeader('X-Admin-Client-Secret', 'secret'));
 
-        Http::fake(['example.test/overview' => Http::response([], 500)]);
         $response = app(\App\AdminHub\Clients\SaasAdminClient::class)->get('webhookwatch', 'overview');
         $this->assertFalse($response->success);
         $this->assertSame('api_error', $response->error['code']);

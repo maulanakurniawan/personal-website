@@ -90,3 +90,23 @@ php artisan admin-user:reset-password "your-email@example.com"
 ```
 
 Other commands: `admin-user:list`, `admin-user:disable`, `admin-user:enable`, and `admin-user:delete`.
+
+## CRUD buttons and visibility
+
+The Admin Hub decides every visible action from the resource schema. `create`, `update`, `delete`, and `restore` are shown only when present in `operations` and hidden for `read_only` / `readonly` resources. Restore buttons are only displayed when the item metadata clearly indicates deletion or archival via `is_deleted`, `is_archived`, `deleted_at`, or `archived_at`.
+
+Delete and archive actions are always submitted through server-side Laravel forms with method spoofing and confirmation text. If `soft_deletes` or `archives` is present on the schema, destructive buttons are labeled `Archive`; otherwise they are labeled `Delete`.
+
+## Create, edit, delete, and restore forms
+
+Create forms are built from `create_fields`, or from `fields` where `creatable` is true. Edit forms are built from `update_fields`, or from `fields` where `editable` is true. The controller filters submitted payloads to those schema-approved fields before forwarding data to the SaaS API.
+
+After successful create, the Admin Hub redirects to the newly-created detail page when the SaaS API returns an item ID; otherwise it returns to the table. Updates redirect to detail pages, deletes return to the table, and restores return to the previous page.
+
+## Bulk actions
+
+When `bulk_actions` exists, resource tables render row checkboxes, a select-all checkbox, an action dropdown, and an Apply button. The browser submits selected IDs and the chosen action to the Admin Hub, which then calls `POST /resources/{resourceKey}/bulk-actions` server-side.
+
+## Reusable field rendering
+
+`FieldRenderer` formats booleans, badges/statuses, email links, URLs, money, numbers, dates, datetimes, textarea text, and JSON values with escaped output by default. The form field component supports text, textarea, email, number, money, boolean, select, date, datetime, URL, JSON, and hidden inputs while preserving old input and showing validation errors.

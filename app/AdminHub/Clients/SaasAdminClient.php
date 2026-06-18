@@ -3,7 +3,6 @@
 namespace App\AdminHub\Clients;
 
 use App\AdminHub\DTO\AdminApiResponse;
-use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use InvalidArgumentException;
@@ -59,9 +58,9 @@ class SaasAdminClient
                 'X-Admin-Client-Secret' => $product['client_secret'],
                 'X-Admin-Hub' => 'maulanakurniawan.com',
             ])->{$method}($url, $payload);
-        } catch (ConnectionException $e) {
+        } catch (\Throwable $e) {
             Log::warning('Admin Hub API connection failed.', ['product' => $productKey, 'endpoint' => $endpoint, 'message' => $e->getMessage()]);
-            return new AdminApiResponse(false, error: ['code' => 'connection_failed', 'message' => 'Unable to reach product API.'], status: 503);
+            return new AdminApiResponse(false, error: ['code' => 'connection_failed', 'message' => 'The product API could not be reached or returned an error.'], status: 503);
         }
 
         $json = $response->json();
@@ -73,12 +72,12 @@ class SaasAdminClient
             Log::warning('Admin Hub API request failed.', ['product' => $productKey, 'endpoint' => $endpoint, 'status' => $response->status()]);
         }
 
-        $messages = [401 => 'Unauthorized', 403 => 'Forbidden', 404 => 'Not found', 422 => 'Validation failed'];
+        $messages = [401 => 'Admin Hub could not access this product. Please check API credentials and permissions.', 403 => 'Admin Hub could not access this product. Please check API credentials and permissions.', 404 => 'The requested resource or record was not found.', 422 => 'Validation failed'];
         return new AdminApiResponse(
             $response->successful(),
             $response->successful() && is_array($json) ? $json : [],
             status: $response->status(),
-            error: $response->successful() ? null : ['code' => 'api_error', 'message' => $messages[$response->status()] ?? 'Product API error.'],
+            error: $response->successful() ? null : ['code' => 'api_error', 'message' => $messages[$response->status()] ?? 'The product API could not be reached or returned an error.'],
         );
     }
 }
