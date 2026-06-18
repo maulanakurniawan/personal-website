@@ -25,6 +25,21 @@ class SaasAdminClient
         return $this->request('patch', $productKey, $endpoint, $payload);
     }
 
+    public function delete(string $productKey, string $endpoint, array $payload = []): AdminApiResponse
+    {
+        return $this->request('delete', $productKey, $endpoint, $payload);
+    }
+
+    public function listResources(string $productKey): AdminApiResponse { return $this->get($productKey, 'resources'); }
+    public function getResourceSchema(string $productKey, string $resourceKey): AdminApiResponse { return $this->get($productKey, "resources/$resourceKey/schema"); }
+    public function listResourceItems(string $productKey, string $resourceKey, array $query = []): AdminApiResponse { return $this->get($productKey, "resources/$resourceKey", $query); }
+    public function getResourceItem(string $productKey, string $resourceKey, string|int $id): AdminApiResponse { return $this->get($productKey, "resources/$resourceKey/$id"); }
+    public function createResourceItem(string $productKey, string $resourceKey, array $data): AdminApiResponse { return $this->post($productKey, "resources/$resourceKey", $data); }
+    public function updateResourceItem(string $productKey, string $resourceKey, string|int $id, array $data): AdminApiResponse { return $this->patch($productKey, "resources/$resourceKey/$id", $data); }
+    public function deleteResourceItem(string $productKey, string $resourceKey, string|int $id): AdminApiResponse { return $this->delete($productKey, "resources/$resourceKey/$id"); }
+    public function restoreResourceItem(string $productKey, string $resourceKey, string|int $id): AdminApiResponse { return $this->post($productKey, "resources/$resourceKey/$id/restore"); }
+    public function runResourceBulkAction(string $productKey, string $resourceKey, string $action, array $ids): AdminApiResponse { return $this->post($productKey, "resources/$resourceKey/bulk-actions", ['action' => $action, 'ids' => $ids]); }
+
     private function request(string $method, string $productKey, string $endpoint, array $payload = []): AdminApiResponse
     {
         $product = config("admin-hub.products.$productKey");
