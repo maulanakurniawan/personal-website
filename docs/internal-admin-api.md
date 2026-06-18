@@ -35,6 +35,7 @@ php artisan internal-admin-client:disable {client_id}
 - `GET /users`
 - `GET /users/{id}`
 - `POST /users/{id}/actions`
+- `DELETE /users/{id}`
 - `GET /subscriptions`
 - `GET /subscriptions/{id}`
 - `GET /analytics`

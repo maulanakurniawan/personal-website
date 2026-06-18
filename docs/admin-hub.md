@@ -14,6 +14,16 @@ ADMIN_HUB_WEBHOOKWATCH_CLIENT_SECRET=...
 
 ## Generic resource UI
 
+
+## User deletion
+
+The Admin Hub user list and detail pages expose destructive user deletion through server-side forms:
+
+- `DELETE /admin/{productKey}/users/{id}`
+
+The hub forwards deletion to `DELETE /users/{id}` on the selected product API. Product APIs are responsible for deleting the user and all related data according to their own cascade/dependency rules.
+
+
 The Admin Hub includes schema-driven CRUD pages under `/admin/{productKey}/resources`. It calls each SaaS internal admin API for an allowlisted resource catalog, then renders resource cards, tables, detail pages, create/edit forms, delete/restore actions, and optional bulk actions without exposing raw JSON to admins.
 
 Resource routes include:

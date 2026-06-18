@@ -20,6 +20,7 @@ Route::middleware([EnsureInternalAdminApiEnabled::class])->prefix('api/internal/
     });
     Route::middleware([AuthenticateInternalAdminClient::class.':write'])->group(function () {
         Route::post('/users/{id}/actions', [InternalAdminApiController::class, 'userAction']);
+        Route::delete('/users/{id}', [InternalAdminApiController::class, 'deleteUser']);
         Route::patch('/settings', [InternalAdminApiController::class, 'updateSettings']);
     });
 });

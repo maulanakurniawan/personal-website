@@ -19,6 +19,7 @@ Route::middleware([EnsureAdminHubEnabled::class])->prefix('admin')->name('admin.
             Route::get('/users', [AdminHubController::class, 'users'])->name('users');
             Route::get('/users/{id}', [AdminHubController::class, 'userDetail'])->name('users.show');
             Route::post('/users/{id}/actions', [AdminHubController::class, 'userAction'])->name('users.actions');
+            Route::delete('/users/{id}', [AdminHubController::class, 'destroyUser'])->name('users.destroy');
             Route::get('/subscriptions', [AdminHubController::class, 'subscriptions'])->name('subscriptions');
             Route::get('/subscriptions/{id}', [AdminHubController::class, 'subscriptionDetail'])->name('subscriptions.show');
             Route::get('/analytics', [AdminHubController::class, 'analytics'])->name('analytics');
