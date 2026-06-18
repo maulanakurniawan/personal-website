@@ -17,10 +17,27 @@ class AdminResourceCrudTest extends TestCase
         config(['admin-hub.enabled' => true, 'admin-hub.products.webhookwatch.base_url' => 'https://example.test', 'admin-hub.products.webhookwatch.client_id' => 'client-id', 'admin-hub.products.webhookwatch.client_secret' => 'super-secret']);
     }
 
-    public function test_resource_index_renders_cards_not_raw_json_and_hides_secrets(): void
+    public function test_resource_index_redirects_to_first_available_resource(): void
     {
         Http::fake(['example.test/resources' => Http::response(['success' => true, 'data' => ['resources' => [['key' => 'users', 'label' => 'Users', 'operations' => ['view'], 'description' => 'Safe users']]]])]);
-        $this->actingAsAdmin()->get('/admin/webhookwatch/resources')->assertOk()->assertSee('Users')->assertSee('Safe users')->assertDontSee('{&quot;resources&quot;')->assertDontSee('super-secret');
+
+        $this->actingAsAdmin()
+            ->get('/admin/webhookwatch/resources')
+            ->assertRedirect('/admin/webhookwatch/resources/users');
+    }
+
+    public function test_resource_table_renders_dynamic_left_navigation_and_hides_legacy_menus(): void
+    {
+        $this->fakeSchemaAndItems();
+
+        $this->actingAsAdmin()
+            ->get('/admin/webhookwatch/resources/users')
+            ->assertOk()
+            ->assertSee('Users')
+            ->assertSee('Invoices')
+            ->assertDontSee('/admin/webhookwatch/overview', false)
+            ->assertDontSee('/admin/webhookwatch/subscriptions', false)
+            ->assertDontSee('super-secret');
     }
 
     public function test_table_renders_schema_columns_and_keeps_pagination_search_and_sort_query(): void
@@ -112,6 +129,7 @@ class AdminResourceCrudTest extends TestCase
     {
         $schema = array_merge(['label' => 'Users', 'operations' => ['view', 'create', 'update', 'delete'], 'searchable' => ['email'], 'list_columns' => [['key' => 'email', 'label' => 'Email', 'type' => 'email', 'sortable' => true], ['key' => 'active', 'label' => 'Active', 'type' => 'boolean']], 'fields' => [['key' => 'email', 'label' => 'Email', 'type' => 'email', 'creatable' => true, 'editable' => true], ['key' => 'active', 'label' => 'Active', 'type' => 'boolean', 'creatable' => true, 'editable' => true]]], $overrides);
         Http::fake([
+            'example.test/resources' => Http::response(['success' => true, 'data' => ['resources' => [['key' => 'users', 'label' => 'Users'], ['key' => 'invoices', 'label' => 'Invoices']]]]),
             'example.test/resources/users/schema' => Http::response(['success' => true, 'data' => $schema]),
             'example.test/resources/users*' => Http::response(['success' => true, 'data' => ['items' => [['id' => 1, 'email' => 'maulana@example.com', 'active' => true]]], 'meta' => ['pagination' => ['current_page' => 2, 'next_page' => 3]]]),
             'example.test/resources/users/1' => Http::response(['success' => true, 'data' => ['item' => ['id' => 1, 'email' => 'maulana@example.com', 'active' => true]]]),
