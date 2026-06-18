@@ -15,7 +15,7 @@ class AdminHubController extends Controller
         $default = config('admin-hub.default_product', 'webhookwatch');
         abort_unless(array_key_exists($default, config('admin-hub.products', [])), 404);
 
-        return redirect()->route('admin.product.overview', ['productKey' => $default]);
+        return redirect()->route('admin.product.resources', ['productKey' => $default]);
     }
 
     public function overview(string $productKey)
