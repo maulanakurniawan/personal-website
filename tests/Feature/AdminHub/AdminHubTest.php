@@ -4,8 +4,8 @@ namespace Tests\Feature\AdminHub;
 
 use App\Models\AdminUser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AdminHubTest extends TestCase
@@ -59,6 +59,21 @@ class AdminHubTest extends TestCase
         Http::fake(['example.test/*' => Http::response(['success' => true, 'data' => [], 'meta' => []])]);
         $admin = AdminUser::create(['name' => 'Admin', 'email' => 'admin@example.com', 'password' => 'secret-password']);
         $this->actingAs($admin, 'admin')->get('/admin/webhookwatch/overview')->assertOk()->assertSee('WebhookWatch')->assertSee('SoloHours');
+    }
+
+    public function test_admin_hub_can_delete_product_user_and_related_data(): void
+    {
+        config(['admin-hub.enabled' => true, 'admin-hub.products.webhookwatch.base_url' => 'https://example.test', 'admin-hub.products.webhookwatch.client_id' => 'id', 'admin-hub.products.webhookwatch.client_secret' => 'secret']);
+        Http::fake([
+            'example.test/users' => Http::response(['success' => true, 'data' => ['items' => [['id' => 10, 'email' => 'user@example.com']]], 'meta' => []]),
+            'example.test/users/10' => Http::response(['success' => true, 'data' => []]),
+        ]);
+        $admin = AdminUser::create(['name' => 'Admin', 'email' => 'admin@example.com', 'password' => 'secret-password']);
+
+        $this->actingAs($admin, 'admin')->get('/admin/webhookwatch/users')->assertOk()->assertSee('Delete')->assertSee('all related data');
+        $this->actingAs($admin, 'admin')->delete('/admin/webhookwatch/users/10')->assertRedirect('/admin/webhookwatch/users')->assertSessionHas('status', 'User and related data deleted.');
+
+        Http::assertSent(fn ($request) => $request->method() === 'DELETE' && $request->url() === 'https://example.test/users/10');
     }
 
     public function test_admin_user_commands_work_without_showing_hashes(): void
