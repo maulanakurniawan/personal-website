@@ -52,6 +52,19 @@ class AdminResourceCrudTest extends TestCase
         $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users/1/edit')->assertOk()->assertSee('Edit Users');
     }
 
+    public function test_crud_buttons_appear_for_rest_style_operation_names(): void
+    {
+        $this->fakeSchemaAndItems(['operations' => ['index', 'show', 'store', 'edit', 'destroy']]);
+
+        $this->actingAsAdmin()
+            ->get('/admin/webhookwatch/resources/users')
+            ->assertOk()
+            ->assertSee('+ Create User')
+            ->assertSee('View')
+            ->assertSee('Edit')
+            ->assertSee('Delete');
+    }
+
     public function test_delete_button_does_not_appear_when_unsupported(): void
     {
         $this->fakeSchemaAndItems(['operations' => ['view']]);
@@ -91,6 +104,7 @@ class AdminResourceCrudTest extends TestCase
     private function actingAsAdmin(): self
     {
         $admin = AdminUser::create(['name' => 'Admin', 'email' => uniqid().'@example.com', 'password' => 'secret-password']);
+
         return $this->actingAs($admin, 'admin');
     }
 

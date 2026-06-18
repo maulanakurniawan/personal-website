@@ -10,13 +10,21 @@ class ResourceSchema
     public static function operations(array $schema): array
     {
         $ops = $schema['operations'] ?? $schema['actions'] ?? [];
-        if (array_is_list($ops)) return $ops;
-        return array_keys(array_filter($ops));
+        $ops = array_is_list($ops) ? $ops : array_keys(array_filter($ops));
+
+        return collect($ops)
+            ->flatMap(fn ($operation) => self::normalizeOperation((string) $operation))
+            ->unique()
+            ->values()
+            ->all();
     }
 
     public static function supports(array $schema, string $operation): bool
     {
-        if (self::readOnly($schema) && in_array($operation, ['create', 'update', 'delete', 'restore'], true)) return false;
+        if (self::readOnly($schema) && in_array($operation, ['create', 'update', 'delete', 'restore'], true)) {
+            return false;
+        }
+
         return in_array($operation, self::operations($schema), true);
     }
 
@@ -33,34 +41,53 @@ class ResourceSchema
     public static function allowedPayload(array $schema, array $input, string $purpose): array
     {
         $allowed = collect(self::fields($schema, $purpose))->pluck('key')->filter()->all();
+
         return Arr::only(Arr::except($input, ['_token', '_method']), $allowed);
     }
 
     public static function fields(array $schema, string $purpose = 'detail'): array
     {
-        $key = match ($purpose) { 'create' => 'create_fields', 'update', 'edit' => 'update_fields', 'list' => 'list_columns', default => 'fields' };
+        $key = match ($purpose) {
+            'create' => 'create_fields', 'update', 'edit' => 'update_fields', 'list' => 'list_columns', default => 'fields'
+        };
         $fields = $schema[$key] ?? null;
-        if ($fields === null && $purpose === 'list') $fields = $schema['columns'] ?? null;
-        if ($fields === null) $fields = $schema['fields'] ?? [];
+        if ($fields === null && $purpose === 'list') {
+            $fields = $schema['columns'] ?? null;
+        }
+        if ($fields === null) {
+            $fields = $schema['fields'] ?? [];
+        }
         $normalized = self::normalizeFields($fields);
-        if ($purpose === 'create') return array_values(array_filter($normalized, fn ($f) => ($f['creatable'] ?? true) && ($f['type'] ?? null) !== 'hidden'));
-        if (in_array($purpose, ['update', 'edit'], true)) return array_values(array_filter($normalized, fn ($f) => ($f['editable'] ?? true) && ($f['type'] ?? null) !== 'hidden'));
-        return array_values(array_filter($normalized, fn ($f) => !($f['hidden'] ?? false) && ($f['type'] ?? null) !== 'hidden'));
+        if ($purpose === 'create') {
+            return array_values(array_filter($normalized, fn ($f) => ($f['creatable'] ?? true) && ($f['type'] ?? null) !== 'hidden'));
+        }
+        if (in_array($purpose, ['update', 'edit'], true)) {
+            return array_values(array_filter($normalized, fn ($f) => ($f['editable'] ?? true) && ($f['type'] ?? null) !== 'hidden'));
+        }
+
+        return array_values(array_filter($normalized, fn ($f) => ! ($f['hidden'] ?? false) && ($f['type'] ?? null) !== 'hidden'));
     }
 
     public static function normalizeFields(array $fields): array
     {
         $out = [];
         foreach ($fields as $key => $field) {
-            if (is_string($field)) $field = ['key' => $field];
-            if (! is_array($field)) continue;
+            if (is_string($field)) {
+                $field = ['key' => $field];
+            }
+            if (! is_array($field)) {
+                continue;
+            }
             $field['key'] ??= is_string($key) ? $key : ($field['name'] ?? null);
-            if (! $field['key']) continue;
+            if (! $field['key']) {
+                continue;
+            }
             $field['name'] ??= $field['key'];
             $field['label'] ??= Str::headline((string) $field['key']);
             $field['type'] ??= 'text';
             $out[] = $field;
         }
+
         return $out;
     }
 
@@ -72,5 +99,17 @@ class ResourceSchema
     public static function value(array $item, array $field): mixed
     {
         return data_get($item, $field['key'] ?? $field['name'] ?? '');
+    }
+
+    private static function normalizeOperation(string $operation): array
+    {
+        return match (Str::lower($operation)) {
+            'crud', '*' => ['view', 'create', 'update', 'delete'],
+            'read', 'list', 'index', 'show' => ['view'],
+            'store', 'insert', 'add' => ['create'],
+            'edit', 'patch', 'put', 'modify' => ['update'],
+            'destroy', 'remove' => ['delete'],
+            default => [$operation],
+        };
     }
 }
