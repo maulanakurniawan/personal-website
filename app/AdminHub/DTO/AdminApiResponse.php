@@ -18,8 +18,24 @@ class AdminApiResponse
             (bool) ($payload['success'] ?? false),
             (array) ($payload['data'] ?? []),
             (array) ($payload['meta'] ?? []),
-            isset($payload['error']) ? (array) $payload['error'] : null,
+            self::normalizeError($payload),
             $status,
         );
     }
+
+    private static function normalizeError(array $payload): ?array
+    {
+        if (! isset($payload['error'])) {
+            return null;
+        }
+        $error = (array) $payload['error'];
+        if (isset($payload['errors']) && ! isset($error['validation'])) {
+            $error['validation'] = (array) $payload['errors'];
+        }
+        if (isset($error['errors']) && ! isset($error['validation'])) {
+            $error['validation'] = (array) $error['errors'];
+        }
+        return $error;
+    }
 }
+
