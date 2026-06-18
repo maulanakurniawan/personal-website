@@ -23,6 +23,7 @@ class ContactFormMail extends Mailable
     {
         return $this->subject('[Maulana Kurniawan] Contact form: ' . $this->subjectLine)
             ->replyTo($this->email, $this->name)
-            ->view('emails.contact_form');
+            ->view('emails.contact_form')
+            ->text('emails.contact_form_text');
     }
 }

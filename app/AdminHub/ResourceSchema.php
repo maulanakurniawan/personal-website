@@ -16,7 +16,24 @@ class ResourceSchema
 
     public static function supports(array $schema, string $operation): bool
     {
+        if (self::readOnly($schema) && in_array($operation, ['create', 'update', 'delete', 'restore'], true)) return false;
         return in_array($operation, self::operations($schema), true);
+    }
+
+    public static function readOnly(array $schema): bool
+    {
+        return (bool) ($schema['read_only'] ?? $schema['readonly'] ?? false);
+    }
+
+    public static function isDeleted(array $item): bool
+    {
+        return (bool) ($item['is_deleted'] ?? $item['is_archived'] ?? false) || filled($item['deleted_at'] ?? null) || filled($item['archived_at'] ?? null);
+    }
+
+    public static function allowedPayload(array $schema, array $input, string $purpose): array
+    {
+        $allowed = collect(self::fields($schema, $purpose))->pluck('key')->filter()->all();
+        return Arr::only(Arr::except($input, ['_token', '_method']), $allowed);
     }
 
     public static function fields(array $schema, string $purpose = 'detail'): array
