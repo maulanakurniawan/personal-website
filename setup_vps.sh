@@ -8,9 +8,18 @@ fi
 
 usage() {
   cat <<USAGE
-Usage: sudo bash setup_vps.sh domain.tld
+Usage:
+  sudo bash setup_vps.sh domain.tld
+  sudo bash setup_vps.sh --remove domain.tld
 
-Example: sudo bash setup_vps.sh example.com
+Examples:
+  sudo bash setup_vps.sh example.com
+  sudo bash setup_vps.sh --remove example.com
+
+Remove mode deletes the domain-specific app directory, nginx config,
+supervisor config, deploy user/home/SSH keys, Let's Encrypt certificate,
+and MariaDB database/user. It does not remove installed packages or
+stop/remove shared server services.
 
 Derived values:
   app name:       domain without the TLD (example)
@@ -21,7 +30,19 @@ Derived values:
 USAGE
 }
 
-if [[ $# -ne 1 || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+REMOVE_DOMAIN=0
+
+if [[ "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 0
+fi
+
+if [[ "${1:-}" == "--remove" || "${1:-}" == "remove" ]]; then
+  REMOVE_DOMAIN=1
+  shift
+fi
+
+if [[ $# -ne 1 ]]; then
   usage
   exit 1
 fi
@@ -47,6 +68,63 @@ LETSENCRYPT_EMAIL="admin@${DOMAIN_NAME}"
 WWW_DOMAIN="www.${DOMAIN_NAME}"
 MYSQL_DB_NAME="${APP_NAME}_db"
 MYSQL_APP_USER="${APP_NAME}_user"
+
+
+remove_domain_installation() {
+  echo "Removing domain-specific setup for ${DOMAIN_NAME}..."
+
+  if [[ -f "/etc/nginx/sites-enabled/${APP_NAME}" || -L "/etc/nginx/sites-enabled/${APP_NAME}" ]]; then
+    rm -f "/etc/nginx/sites-enabled/${APP_NAME}"
+  fi
+
+  if [[ -e "/etc/nginx/sites-available/${APP_NAME}" || -L "/etc/nginx/sites-available/${APP_NAME}" ]]; then
+    rm -f "/etc/nginx/sites-available/${APP_NAME}"
+  fi
+
+  if [[ -f "/etc/supervisor/conf.d/${APP_NAME}.conf" ]]; then
+    rm -f "/etc/supervisor/conf.d/${APP_NAME}.conf"
+    if command -v supervisorctl >/dev/null 2>&1; then
+      supervisorctl reread || true
+      supervisorctl update || true
+    fi
+  fi
+
+  if command -v certbot >/dev/null 2>&1 && [[ -d "/etc/letsencrypt/live/${DOMAIN_NAME}" ]]; then
+    certbot delete --non-interactive --cert-name "${DOMAIN_NAME}" || true
+  fi
+
+  if [[ -d "${APP_DIR}" ]]; then
+    rm -rf "${APP_DIR}"
+  fi
+
+  if command -v mysql >/dev/null 2>&1; then
+    mysql -e "DROP DATABASE IF EXISTS \`${MYSQL_DB_NAME}\`;" || true
+    mysql -e "DROP USER IF EXISTS '${MYSQL_APP_USER}'@'localhost'; FLUSH PRIVILEGES;" || true
+  fi
+
+  if id -u "${DEPLOY_USER}" >/dev/null 2>&1; then
+    userdel -r "${DEPLOY_USER}" || userdel "${DEPLOY_USER}" || true
+  fi
+
+  rm -f "/var/log/${APP_NAME}-queue.err.log" "/var/log/${APP_NAME}-queue.out.log"
+  rm -f "/var/log/${APP_NAME}-schedule.err.log" "/var/log/${APP_NAME}-schedule.out.log"
+
+  if command -v nginx >/dev/null 2>&1; then
+    if nginx -t; then
+      systemctl reload nginx || true
+    else
+      echo "Warning: nginx config test failed after removal; leaving nginx reload to the operator." >&2
+    fi
+  fi
+
+  echo "Domain-specific setup removed for ${DOMAIN_NAME}."
+  echo "Shared packages and services were left installed and running."
+}
+
+if ((REMOVE_DOMAIN)); then
+  remove_domain_installation
+  exit 0
+fi
 
 domain_already_configured() {
   local config_dirs=(
