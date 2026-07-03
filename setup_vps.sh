@@ -165,13 +165,6 @@ else
   echo "Composer is already installed."
 fi
 
-if ! command -v node >/dev/null 2>&1; then
-  curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-  install_missing_packages nodejs
-else
-  echo "Node.js is already installed."
-fi
-
 if ! id -u "${DEPLOY_USER}" >/dev/null 2>&1; then
   useradd -m -s /bin/bash "${DEPLOY_USER}"
 fi
@@ -347,8 +340,7 @@ $(cat "/home/${DEPLOY_USER}/.ssh/${APP_NAME}_deploy.pub")
 
 Next steps:
 - Point ${DOMAIN_NAME} and ${WWW_DOMAIN} DNS A/AAAA records to this server before running setup.
-- Deploy the app to ${APP_DIR} as ${DEPLOY_USER}
+- Deploy the production-ready app artifact to ${APP_DIR} as ${DEPLOY_USER}
 - Copy .env.example to .env and configure database/mail
-- Run: composer install && php artisan key:generate && php artisan migrate
-- Run: npm install && npm run build
+- Run: composer install --no-dev --optimize-autoloader && php artisan key:generate && php artisan migrate --force
 CREDS
