@@ -340,7 +340,9 @@ $(cat "/home/${DEPLOY_USER}/.ssh/${APP_NAME}_deploy.pub")
 
 Next steps:
 - Point ${DOMAIN_NAME} and ${WWW_DOMAIN} DNS A/AAAA records to this server before running setup.
-- Deploy the production-ready app artifact to ${APP_DIR} as ${DEPLOY_USER}
-- Copy .env.example to .env and configure database/mail
-- Run: composer install --no-dev --optimize-autoloader && php artisan key:generate && php artisan migrate --force
+- Configure GitHub Actions secrets for DEPLOY_USER, DEPLOY_HOST, and the SSH private key above.
+- Make sure the workflow APP_DIR value is ${APP_DIR}.
+- Deploy the production-ready app artifact to ${APP_DIR} as ${DEPLOY_USER}.
+- Copy .env.example to .env and configure database/mail before the first GitHub Actions deploy.
+- Let the GitHub Actions remote deploy step run migrations, cache commands, queue restart, and other artisan tasks.
 CREDS
