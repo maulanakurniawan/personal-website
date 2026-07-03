@@ -15,6 +15,7 @@ Example: sudo bash setup_vps.sh example.com
 Derived values:
   app name:       domain without the TLD (example)
   app path:       /var/www/app_name
+  deploy user:    app_name
   database name:  app_name_db
   database user:  app_name_user
 USAGE
@@ -40,7 +41,7 @@ fi
 APP_NAME="${DOMAIN_NAME%%.*}"
 APP_NAME="${APP_NAME//-/_}"
 APP_DIR="/var/www/${APP_NAME}"
-DEPLOY_USER="deploy"
+DEPLOY_USER="${APP_NAME}"
 PHP_VERSION="8.2"
 LETSENCRYPT_EMAIL="admin@${DOMAIN_NAME}"
 WWW_DOMAIN="www.${DOMAIN_NAME}"
