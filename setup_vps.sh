@@ -2,29 +2,110 @@
 set -euo pipefail
 
 if [[ ${EUID:-$(id -u)} -ne 0 ]]; then
-  echo "Please run as root (e.g., sudo bash setup_vps.sh)."
+  echo "Please run as root (e.g., sudo bash setup_vps.sh domain.tld)."
   exit 1
 fi
 
-APP_NAME="maulana"
+usage() {
+  cat <<USAGE
+Usage: sudo bash setup_vps.sh domain.tld
+
+Example: sudo bash setup_vps.sh example.com
+
+Derived values:
+  app name:       domain without the TLD (example)
+  app path:       /var/www/app_name
+  database name:  app_name_db
+  database user:  app_name_user
+USAGE
+}
+
+if [[ $# -ne 1 || "${1:-}" == "-h" || "${1:-}" == "--help" ]]; then
+  usage
+  exit 1
+fi
+
+DOMAIN_NAME="${1,,}"
+DOMAIN_NAME="${DOMAIN_NAME#http://}"
+DOMAIN_NAME="${DOMAIN_NAME#https://}"
+DOMAIN_NAME="${DOMAIN_NAME%%/*}"
+DOMAIN_NAME="${DOMAIN_NAME%.}"
+
+if [[ ! "${DOMAIN_NAME}" =~ ^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?(\.[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?)+$ ]]; then
+  echo "Invalid domain: ${DOMAIN_NAME}"
+  usage
+  exit 1
+fi
+
+APP_NAME="${DOMAIN_NAME%%.*}"
+APP_NAME="${APP_NAME//-/_}"
 APP_DIR="/var/www/${APP_NAME}"
 DEPLOY_USER="deploy"
 PHP_VERSION="8.2"
-DOMAIN_NAME="maulanakurniawan.com"
-LETSENCRYPT_EMAIL="maulana.kurniawan@gmail.com"
+LETSENCRYPT_EMAIL="admin@${DOMAIN_NAME}"
 WWW_DOMAIN="www.${DOMAIN_NAME}"
-MYSQL_DB_NAME="${APP_NAME//-/_}"
-MYSQL_APP_USER="${MYSQL_DB_NAME}_user"
+MYSQL_DB_NAME="${APP_NAME}_db"
+MYSQL_APP_USER="${APP_NAME}_user"
 
-if [[ "${DOMAIN_NAME}" == "example.com" || "${LETSENCRYPT_EMAIL}" == "admin@example.com" ]]; then
-  echo "Please set DOMAIN_NAME and LETSENCRYPT_EMAIL at the top of setup_vps.sh before running."
-  exit 1
+domain_already_configured() {
+  local config_dirs=(
+    /etc/nginx/sites-available
+    /etc/nginx/sites-enabled
+    /etc/apache2/sites-available
+    /etc/apache2/sites-enabled
+    /etc/httpd/conf.d
+  )
+  local dir
+  local file
+
+  if [[ -d "/etc/letsencrypt/live/${DOMAIN_NAME}" ]]; then
+    return 0
+  fi
+
+  for dir in "${config_dirs[@]}"; do
+    [[ -d "${dir}" ]] || continue
+
+    while IFS= read -r -d '' file; do
+      if grep -Fq -- "${DOMAIN_NAME}" "${file}" || grep -Fq -- "${WWW_DOMAIN}" "${file}"; then
+        return 0
+      fi
+    done < <(find "${dir}" -type f -print0)
+  done
+
+  return 1
+}
+
+if domain_already_configured; then
+  echo "Domain ${DOMAIN_NAME} is already configured on this server; skipping setup."
+  exit 0
 fi
 
 export DEBIAN_FRONTEND=noninteractive
 
+apt-get update
+
 has_apt_package() {
   apt-cache show "$1" >/dev/null 2>&1
+}
+
+is_installed() {
+  dpkg-query -W -f='${Status}' "$1" 2>/dev/null | grep -q "install ok installed"
+}
+
+install_missing_packages() {
+  local missing=()
+
+  for package in "$@"; do
+    if ! is_installed "${package}"; then
+      missing+=("${package}")
+    fi
+  done
+
+  if ((${#missing[@]})); then
+    apt-get install -y --no-install-recommends "${missing[@]}"
+  else
+    echo "All required apt packages are already installed."
+  fi
 }
 
 php_pkg() {
@@ -50,11 +131,24 @@ PHP_PACKAGES=(
   "$(php_pkg intl)"
 )
 
-apt-get update
-apt-get install -y --no-install-recommends \
-  ca-certificates curl git openssl sudo unzip supervisor nginx mariadb-server certbot python3-certbot-nginx ufw \
-  "${PHP_PACKAGES[@]}" \
+REQUIRED_PACKAGES=(
+  ca-certificates
+  curl
+  git
+  openssl
+  sudo
+  unzip
+  supervisor
+  nginx
+  mariadb-server
+  certbot
+  python3-certbot-nginx
+  ufw
   redis-server
+  "${PHP_PACKAGES[@]}"
+)
+
+install_missing_packages "${REQUIRED_PACKAGES[@]}"
 
 PHP_FPM_SOCKET="/run/php/php-fpm.sock"
 PHP_FPM_SERVICE="php-fpm"
@@ -67,11 +161,8 @@ fi
 
 if ! command -v composer >/dev/null 2>&1; then
   curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-fi
-
-if ! command -v node >/dev/null 2>&1; then
-  curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
-  apt-get install -y nodejs
+else
+  echo "Composer is already installed."
 fi
 
 if ! id -u "${DEPLOY_USER}" >/dev/null 2>&1; then
@@ -249,8 +340,9 @@ $(cat "/home/${DEPLOY_USER}/.ssh/${APP_NAME}_deploy.pub")
 
 Next steps:
 - Point ${DOMAIN_NAME} and ${WWW_DOMAIN} DNS A/AAAA records to this server before running setup.
-- Deploy the app to ${APP_DIR} as ${DEPLOY_USER}
-- Copy .env.example to .env and configure database/mail
-- Run: composer install && php artisan key:generate && php artisan migrate
-- Run: npm install && npm run build
+- Configure GitHub Actions secrets for DEPLOY_USER, DEPLOY_HOST, and the SSH private key above.
+- Make sure the workflow APP_DIR value is ${APP_DIR}.
+- Deploy the production-ready app artifact to ${APP_DIR} as ${DEPLOY_USER}.
+- Copy .env.example to .env and configure database/mail before the first GitHub Actions deploy.
+- Let the GitHub Actions remote deploy step run migrations, cache commands, queue restart, and other artisan tasks.
 CREDS
