@@ -1,0 +1,23 @@
+1. Run SaaS API prompt on WebhookWatch
+
+2. Run SaaS API prompt on SoloHours
+
+3. Create client credentials on each:
+   php artisan internal-admin-client:create "Admin Hub" --scopes=read,write
+
+4. Run Admin Hub prompt on maulanakurniawan.com
+
+5. Add WebhookWatch/SoloHours credentials to maulanakurniawan.com .env
+
+6. Create central admin user:
+   php artisan admin-user:create "Maulana Kurniawan" "your-email@example.com"1
+
+7. Run Prompt C on WebhookWatch.
+
+8. Run Prompt C on SoloHours.
+
+9. Deploy/run migrations/tests.
+
+10. Run Prompt D on maulanakurniawan.com.
+
+11. Test Admin Hub tables and CRUD.
