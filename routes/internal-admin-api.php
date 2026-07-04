@@ -17,10 +17,14 @@ Route::middleware([EnsureInternalAdminApiEnabled::class])->prefix('api/internal/
         Route::get('/settings', [InternalAdminApiController::class, 'settings']);
         Route::get('/audit-logs', [InternalAdminApiController::class, 'auditLogs']);
         Route::get('/product-resources', [InternalAdminApiController::class, 'resources']);
+        Route::get('/product-resources/{resourceKey}/schema', [InternalAdminApiController::class, 'resourceSchema']);
+        Route::get('/product-resources/{resourceKey}', [InternalAdminApiController::class, 'resourceItems']);
+        Route::get('/product-resources/{resourceKey}/{id}', [InternalAdminApiController::class, 'resourceItem']);
     });
     Route::middleware([AuthenticateInternalAdminClient::class.':write'])->group(function () {
         Route::post('/users/{id}/actions', [InternalAdminApiController::class, 'userAction']);
         Route::delete('/users/{id}', [InternalAdminApiController::class, 'deleteUser']);
         Route::patch('/settings', [InternalAdminApiController::class, 'updateSettings']);
+        Route::patch('/product-resources/{resourceKey}/{id}', [InternalAdminApiController::class, 'updateResourceItem']);
     });
 });

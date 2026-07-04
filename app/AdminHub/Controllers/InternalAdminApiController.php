@@ -5,6 +5,7 @@ namespace App\AdminHub\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AdminAuditLog;
 use App\Models\AdminUser;
+use App\Models\ValidationLead;
 use Illuminate\Http\Request;
 
 class InternalAdminApiController extends Controller
@@ -84,7 +85,80 @@ class InternalAdminApiController extends Controller
     {
         $views = collect(glob(resource_path('views/articles/*.blade.php')) ?: [])->map(fn ($path) => basename($path, '.blade.php'))->values();
 
-        return $this->ok(['cards' => [['title' => 'Articles', 'value' => $views->count()], ['title' => 'Contact form', 'value' => 'email-only']], 'tables' => ['articles' => $views]]);
+        return $this->ok([
+            'cards' => [['title' => 'Articles', 'value' => $views->count()], ['title' => 'Contact form', 'value' => 'email-only'], ['title' => 'Validation Leads', 'value' => ValidationLead::count()]],
+            'tables' => ['articles' => $views],
+            'resources' => [$this->validationLeadResourceSchema()],
+        ]);
+    }
+
+    public function resourceSchema(string $resourceKey)
+    {
+        if ($resourceKey !== 'validation_leads') {
+            return $this->error('not_found', 'Resource not found.', 404);
+        }
+
+        return $this->ok($this->validationLeadResourceSchema());
+    }
+
+    public function resourceItems(Request $request, string $resourceKey)
+    {
+        if ($resourceKey !== 'validation_leads') {
+            return $this->error('not_found', 'Resource not found.', 404);
+        }
+
+        $query = ValidationLead::query();
+        foreach (['product_key', 'status', 'locale', 'target_category', 'price_interest', 'price_seen_currency', 'utm_source'] as $field) {
+            if ($request->filled($field)) {
+                $query->where($field, $request->query($field));
+            }
+        }
+        if ($request->filled('search')) {
+            $search = '%'.$request->query('search').'%';
+            $query->where(fn ($q) => $q->where('email', 'like', $search)->orWhere('product_key', 'like', $search)->orWhere('product_name', 'like', $search)->orWhere('notes', 'like', $search)->orWhere('target_category', 'like', $search));
+        }
+
+        return $this->ok(['items' => $query->latest()->limit(100)->get()]);
+    }
+
+    public function resourceItem(string $resourceKey, string $id)
+    {
+        if ($resourceKey !== 'validation_leads') {
+            return $this->error('not_found', 'Resource not found.', 404);
+        }
+
+        return $this->ok(['item' => ValidationLead::findOrFail($id)]);
+    }
+
+    public function updateResourceItem(Request $request, string $resourceKey, string $id)
+    {
+        if ($resourceKey !== 'validation_leads') {
+            return $this->error('not_found', 'Resource not found.', 404);
+        }
+
+        $validated = $request->validate([
+            'status' => ['sometimes', 'string', 'in:'.implode(',', ValidationLead::STATUSES)],
+            'notes' => ['sometimes', 'nullable', 'string', 'max:2000'],
+            'target_category' => ['sometimes', 'nullable', 'string', 'max:100'],
+            'price_interest' => ['sometimes', 'nullable', 'in:yes,maybe,no'],
+        ]);
+        $lead = ValidationLead::findOrFail($id);
+        $lead->fill($validated)->save();
+
+        return $this->ok(['item' => $lead->fresh()]);
+    }
+
+    private function validationLeadResourceSchema(): array
+    {
+        return [
+            'key' => 'validation_leads', 'label' => 'Validation Leads', 'description' => 'Waitlist and validation leads from small SaaS idea pages', 'operations' => ['view', 'update'],
+            'list_columns' => ['id', 'product_key', 'email', 'locale', 'target_category', 'price_interest', 'price_seen_currency', 'price_seen_amount', 'status', 'submission_count', 'last_submitted_at', 'created_at'],
+            'searchable' => ['email', 'product_key', 'product_name', 'notes', 'target_category'],
+            'filterable' => ['product_key', 'status', 'locale', 'target_category', 'price_interest', 'price_seen_currency', 'utm_source', 'created_at'],
+            'sortable' => ['id', 'product_key', 'email', 'status', 'submission_count', 'last_submitted_at', 'created_at', 'updated_at'],
+            'update_fields' => ['status', 'notes', 'target_category', 'price_interest'],
+            'fields' => ['id', 'product_key', 'product_name', 'source_url', 'email', 'locale', 'target_category', 'price_interest', 'notes', 'price_seen_currency', 'price_seen_amount', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'ip_hash', 'user_agent', 'status', 'submission_count', 'last_submitted_at', 'created_at', 'updated_at'],
+        ];
     }
 
     private function audit(Request $request, string $action, string $targetType, ?string $targetId, array $payload): void
