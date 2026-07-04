@@ -68,7 +68,7 @@ jobs:
             --exclude "bootstrap/cache" \
             --exclude "setup_vps.sh" \
             ./ \
-            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/maulana
+            ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }}:/var/www/${{ secrets.DEPLOY_USER }}
 
       # ---------- Remote artisan commands ----------
       - name: Run remote deploy commands
@@ -78,7 +78,7 @@ jobs:
           $SSH_CMD ${{ secrets.DEPLOY_USER }}@${{ secrets.DEPLOY_HOST }} << 'EOF'
           set -euo pipefail
 
-          APP_DIR="/var/www/maulana"
+          APP_DIR="/var/www/${{ secrets.DEPLOY_USER }}"
           cd "$APP_DIR"
 
           # Ensure required dirs exist (sometimes excluded/missing)
