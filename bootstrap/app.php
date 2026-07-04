@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->redirectGuestsTo(fn () => route('admin.login'));
-        $middleware->validateCsrfTokens(except: ['api/internal/admin/v1/*']);
+        $middleware->validateCsrfTokens(except: ['api/internal/admin/v1/*', 'internal/validation/v1/leads']);
 
         $middleware->web(append: [
             \Illuminate\Cookie\Middleware\EncryptCookies::class,

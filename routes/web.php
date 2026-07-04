@@ -1,9 +1,16 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\Internal\ValidationLeadController;
 use App\Http\Controllers\MarketingController;
 use App\Http\Controllers\SitemapController;
+use App\Http\Middleware\AuthenticateValidationApiClient;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+
+Route::post('/internal/validation/v1/leads', [ValidationLeadController::class, 'store'])
+    ->middleware([AuthenticateValidationApiClient::class, 'throttle:30,1'])
+    ->name('internal.validation.leads.store');
 
 Route::get('/', [MarketingController::class, 'home'])->name('home');
 Route::get('/about', [MarketingController::class, 'about'])->name('about');
@@ -24,7 +31,6 @@ Route::get('/robots.txt', function () {
 
     return response($content, 200, ['Content-Type' => 'text/plain']);
 })->name('robots');
-
 
 Route::match(['get', 'post'], '/webhooks/stripe', function (Request $request) {
     return response()->json([
