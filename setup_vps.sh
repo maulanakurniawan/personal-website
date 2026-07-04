@@ -254,9 +254,9 @@ usermod -aG www-data "${DEPLOY_USER}"
 DEPLOY_PASSWORD=$(openssl rand -hex 24)
 echo "${DEPLOY_USER}:${DEPLOY_PASSWORD}" | chpasswd
 
-install -d -m 700 "/home/${DEPLOY_USER}/.ssh"
+install -d -m 700 -o "${DEPLOY_USER}" -g "${DEPLOY_USER}" "/home/${DEPLOY_USER}/.ssh"
 if [[ ! -f "/home/${DEPLOY_USER}/.ssh/${APP_NAME}_deploy" ]]; then
-  ssh-keygen -t ed25519 -f "/home/${DEPLOY_USER}/.ssh/${APP_NAME}_deploy" -N ""
+  runuser -u "${DEPLOY_USER}" -- ssh-keygen -t ed25519 -f "/home/${DEPLOY_USER}/.ssh/${APP_NAME}_deploy" -N ""
 fi
 
 touch "/home/${DEPLOY_USER}/.ssh/authorized_keys"
