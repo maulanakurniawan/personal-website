@@ -89,7 +89,7 @@ jobs:
                    bootstrap/cache
 
           # Ensure writable dirs (adjust to your nginx user/group)
-          chown -R deploy:www-data storage bootstrap/cache || true
+          chown -R ${{ secrets.DEPLOY_USER }}:www-data storage bootstrap/cache || true
           find storage bootstrap/cache -type d -exec chmod 775 {} \;
           find storage bootstrap/cache -type f -exec chmod 664 {} \;
 
