@@ -18,7 +18,7 @@ Now I want to improve the Admin Hub UI.
 
 Current issue:
 
-Some Admin Hub pages show plain JSON responses from the SaaS APIs, and the admin panel does not clearly show Create, Edit, Delete, Restore, or Bulk Action buttons.
+Some Admin Hub pages show plain JSON responses from the SaaS APIs, and the admin panel does not clearly show Create, Edit, Delete, or Restore buttons.
 
 Main goal:
 
@@ -66,7 +66,6 @@ POST   /api/internal/admin/v1/resources/{resourceKey}
 PATCH  /api/internal/admin/v1/resources/{resourceKey}/{id}
 DELETE /api/internal/admin/v1/resources/{resourceKey}/{id}
 POST   /api/internal/admin/v1/resources/{resourceKey}/{id}/restore
-POST   /api/internal/admin/v1/resources/{resourceKey}/bulk-actions
 ```
 
 The Admin Hub must call those endpoints server-side through Laravel controllers.
@@ -91,7 +90,6 @@ GET    /admin/{productKey}/resources/{resourceKey}/{id}/edit
 PATCH  /admin/{productKey}/resources/{resourceKey}/{id}
 DELETE /admin/{productKey}/resources/{resourceKey}/{id}
 POST   /admin/{productKey}/resources/{resourceKey}/{id}/restore
-POST   /admin/{productKey}/resources/{resourceKey}/bulk-actions
 ```
 
 Keep existing pages:
@@ -169,7 +167,6 @@ restoreResourceItem(
     string|int $id
 )
 
-runResourceBulkAction(
     string $productKey,
     string $resourceKey,
     string $action,
@@ -638,32 +635,10 @@ After successful restore:
 If the API does not return enough metadata to know whether a record is deleted/archived, do not show Restore unless clearly supported.
 
 ============================================================
-BULK ACTION BUTTONS
-===================
+NO BULK ACTION BUTTONS
+======================
 
-If the schema includes bulk actions, support:
-
-```txt
-POST /admin/{productKey}/resources/{resourceKey}/bulk-actions
-```
-
-UI requirements:
-
-* Add checkbox per table row.
-* Add select-all checkbox.
-* Add bulk action dropdown above the table.
-* Add Apply button.
-* Show confirmation for destructive bulk actions.
-* Submit selected IDs and selected action to the Admin Hub controller.
-* The Admin Hub controller should call SaaS API:
-
-```txt
-POST /resources/{resourceKey}/bulk-actions
-```
-
-Do not show bulk action UI if the schema has no bulk actions.
-
-Do not show fake or non-working bulk action buttons.
+Do not add bulk action UI or endpoints. Admin Hub resource tables must only show row-level View, Edit, Delete/Archive, and Restore actions. Ignore legacy `bulk_actions` metadata if a SaaS schema still returns it.
 
 ============================================================
 ACTION VISIBILITY RULES
@@ -675,7 +650,6 @@ Use schema fields such as:
 
 ```txt
 operations
-bulk_actions
 danger_level
 soft_deletes
 is_deleted
@@ -905,7 +879,6 @@ back links
 visible Create buttons
 visible View/Edit/Delete/Restore row buttons
 visible detail page action buttons
-bulk action controls when supported
 read-only labels
 ```
 
@@ -989,7 +962,7 @@ Add or update tests for:
 * Create page only appears when create is supported.
 * Edit page only appears when update is supported.
 * Read-only resources do not show create/edit/delete buttons.
-* Bulk action controls appear only when bulk actions exist.
+* Bulk action controls never appear, even if a SaaS schema still includes legacy bulk action metadata.
 * Validation errors from SaaS API are displayed.
 * Unknown resource returns safe 404.
 * API failure shows safe error state.
@@ -1018,7 +991,7 @@ How to add a new SaaS resource
 How CRUD buttons are displayed
 How CRUD actions flow through Admin Hub
 How Create/Edit/Delete/Restore forms work
-How bulk actions work
+Why bulk actions are not supported
 Security notes
 Why resources are allowlisted
 Troubleshooting API errors

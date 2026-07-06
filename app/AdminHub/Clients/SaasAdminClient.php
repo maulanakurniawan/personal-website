@@ -71,11 +71,6 @@ class SaasAdminClient
         return $this->post($productKey, "resources/$resourceKey/$id/restore");
     }
 
-    public function runResourceBulkAction(string $productKey, string $resourceKey, string $action, array $ids): AdminApiResponse
-    {
-        return $this->post($productKey, "resources/$resourceKey/bulk-actions", ['action' => $action, 'ids' => $ids]);
-    }
-
     private function localMaulanakurniawanResourceRequest(string $method, string $endpoint, array $payload = []): AdminApiResponse
     {
         $parts = explode('/', trim($endpoint, '/'));

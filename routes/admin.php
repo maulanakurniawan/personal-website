@@ -35,7 +35,6 @@ Route::middleware([EnsureAdminHubEnabled::class])->prefix('admin')->name('admin.
             Route::patch('/resources/{resourceKey}/{id}', [AdminResourceController::class, 'update'])->name('resources.update');
             Route::delete('/resources/{resourceKey}/{id}', [AdminResourceController::class, 'destroy'])->name('resources.destroy');
             Route::post('/resources/{resourceKey}/{id}/restore', [AdminResourceController::class, 'restore'])->name('resources.restore');
-            Route::post('/resources/{resourceKey}/bulk-actions', [AdminResourceController::class, 'bulk'])->name('resources.bulk');
         });
     });
 });
