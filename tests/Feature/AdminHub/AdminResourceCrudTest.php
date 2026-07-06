@@ -96,6 +96,23 @@ class AdminResourceCrudTest extends TestCase
         $this->actingAsAdmin()->get('/admin/webhookwatch/resources/users')->assertOk()->assertSee('method="POST"', false)->assertSee('Delete')->assertSee('confirm(', false);
     }
 
+    public function test_bulk_actions_are_not_rendered_or_routable_even_when_schema_advertises_them(): void
+    {
+        $this->fakeSchemaAndItems(['bulk_actions' => [['key' => 'delete_selected', 'label' => 'Delete selected']]]);
+
+        $this->actingAsAdmin()
+            ->get('/admin/webhookwatch/resources/users')
+            ->assertOk()
+            ->assertDontSee('bulk-actions', false)
+            ->assertDontSee('Select all')
+            ->assertDontSee('Delete selected')
+            ->assertDontSee('name="ids[]"', false);
+
+        $this->actingAsAdmin()
+            ->post('/admin/webhookwatch/resources/users/bulk-actions', ['action' => 'delete_selected', 'ids' => [1]])
+            ->assertStatus(405);
+    }
+
     public function test_validation_errors_from_saas_are_displayed(): void
     {
         Http::fake([

@@ -6,7 +6,6 @@ use App\AdminHub\Clients\SaasAdminClient;
 use App\AdminHub\ResourceSchema;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 
 class AdminResourceController extends Controller
@@ -106,13 +105,6 @@ class AdminResourceController extends Controller
         $response = $this->client->restoreResourceItem($productKey, $resourceKey, $id);
 
         return back()->with($response->success ? 'status' : 'error', $response->success ? 'Resource restored.' : ($response->error['message'] ?? 'Restore failed.'));
-    }
-
-    public function bulk(Request $request, string $productKey, string $resourceKey)
-    {
-        $response = $this->client->runResourceBulkAction($productKey, $resourceKey, (string) $request->input('action'), Arr::wrap($request->input('ids', [])));
-
-        return back()->with($response->success ? 'status' : 'error', $response->success ? 'Bulk action completed.' : ($response->error['message'] ?? 'Bulk action failed.'));
     }
 
     private function itemData(array $data, string $id): array

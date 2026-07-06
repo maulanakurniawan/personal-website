@@ -58,7 +58,6 @@ POST   /api/internal/admin/v1/resources/{resourceKey}
 PATCH  /api/internal/admin/v1/resources/{resourceKey}/{id}
 DELETE /api/internal/admin/v1/resources/{resourceKey}/{id}
 POST   /api/internal/admin/v1/resources/{resourceKey}/{id}/restore
-POST   /api/internal/admin/v1/resources/{resourceKey}/bulk-actions
 ```
 
 All routes must use existing internal admin API authentication:
@@ -313,8 +312,7 @@ Return:
         "required": false
       }
     ],
-    "filters": [],
-    "bulk_actions": []
+    "filters": []
   },
   "meta": {}
 }
@@ -349,7 +347,7 @@ Rules:
 * If model supports soft deletes, use soft delete.
 * If not safe to delete, return unsupported.
 * Never hard delete unless explicitly safe.
-* Always audit create/update/delete/restore/bulk actions.
+* Always audit create/update/delete/restore actions.
 
 Restore endpoint:
 
@@ -359,22 +357,7 @@ POST /api/internal/admin/v1/resources/{resourceKey}/{id}/restore
 
 Only available for soft-deletable models.
 
-Bulk actions endpoint:
-
-```txt id="zi7syf"
-POST /api/internal/admin/v1/resources/{resourceKey}/bulk-actions
-```
-
-Example body:
-
-```json id="08pybt"
-{
-  "action": "delete",
-  "ids": [1, 2, 3]
-}
-```
-
-Only expose bulk actions explicitly defined in the resource registry.
+Do not expose bulk action endpoints. The Admin Hub supports only single-record View, Create, Edit, Delete/Archive, and Restore actions.
 
 ============================================================
 FIELD SAFETY
@@ -464,7 +447,6 @@ resource.create
 resource.update
 resource.delete
 resource.restore
-resource.bulk.delete
 ```
 
 ============================================================
@@ -533,7 +515,6 @@ Add tests for:
 * Update validates allowed fields.
 * Write action creates audit log.
 * Soft delete is used where available.
-* Bulk action only allows registered actions.
 * List supports search/filter/sort/pagination.
 
 Use existing test style.
