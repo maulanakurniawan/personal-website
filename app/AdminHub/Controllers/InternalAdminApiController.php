@@ -152,7 +152,7 @@ class InternalAdminApiController extends Controller
     {
         return [
             'key' => 'validation_leads', 'label' => 'Validation Leads', 'description' => 'Waitlist and validation leads from small SaaS idea pages', 'operations' => ['view', 'update'],
-            'list_columns' => ['id', 'product_key', 'email', 'locale', 'target_category', 'price_interest', 'price_seen_currency', 'price_seen_amount', 'status', 'submission_count', 'last_submitted_at', 'created_at'],
+            'list_columns' => ['id', 'product_key', 'email', 'status', 'submission_count', 'last_submitted_at'],
             'searchable' => ['email', 'product_key', 'product_name', 'notes', 'target_category'],
             'filterable' => ['product_key', 'status', 'locale', 'target_category', 'price_interest', 'price_seen_currency', 'utm_source', 'created_at'],
             'sortable' => ['id', 'product_key', 'email', 'status', 'submission_count', 'last_submitted_at', 'created_at', 'updated_at'],
