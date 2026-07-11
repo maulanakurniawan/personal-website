@@ -34,7 +34,9 @@ class ValidationLeadAdminPanelTest extends TestCase
             ->assertOk()
             ->assertSee('Validation Leads')
             ->assertSee('user@example.com')
-            ->assertSee('keepbydate');
+            ->assertSee('keepbydate')
+            ->assertDontSee('Target Category')
+            ->assertDontSee('Price Interest');
     }
 
     public function test_validation_lead_review_fields_can_be_edited_from_admin_hub(): void
